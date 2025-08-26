@@ -1,7 +1,7 @@
-import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../App";
 
 type BottomBarProps = {
@@ -10,10 +10,11 @@ type BottomBarProps = {
 };
 
 export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps) {
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
-    <View style={styles.bottomBar}>
+    <View style={[styles.bottomBar, { paddingBottom: insets.bottom }]}>
       <TouchableOpacity
         style={[styles.bottomButton, { backgroundColor: "blue" }]}
         onPress={onReloadFeed || (() => navigation.navigate("FeedPage", { nome: nomeUsuario }))}
@@ -56,6 +57,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderTopWidth: 1,
     borderTopColor: "#ccc",
+    backgroundColor: "#fff",
   },
   bottomButton: {
     flex: 1,

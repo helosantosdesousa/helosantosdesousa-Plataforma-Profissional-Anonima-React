@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { RootStackParamList } from "../App";
 import BottomBar from "../components/BottomBar";
 
@@ -90,13 +91,12 @@ const initialPosts: Post[] = [
   },
 ];
 
-
 export default function FeedPage({ route }: Props) {
   const navigation = useNavigation<FeedPageNavigationProp>();
   const nomeUsuario = route.params?.nome || "Usuário Exemplo";
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={[styles.feedContent, { paddingBottom: 80 }]}>
         {initialPosts.map((post) => (
           <View key={post.id} style={styles.postCard}>
@@ -111,7 +111,7 @@ export default function FeedPage({ route }: Props) {
         nomeUsuario={nomeUsuario}
         onReloadFeed={() => navigation.replace("FeedPage", { nome: nomeUsuario })}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
