@@ -50,6 +50,12 @@ export default function FeedPage() {
         >
           <Text style={styles.bottomButtonText}>Chat</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.bottomButton, { backgroundColor: "orange" }]}
+          onPress={() => navigation.navigate("PerfilPage")}
+        >
+          <Text style={styles.bottomButtonText}>Perfil</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -72,18 +78,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginBottom: 16,
   },
-  feedContent: {
-    alignItems: "center",
-    justifyContent: "center",
-    flexGrow: 1,
-  },
+  feedContent: { alignItems: "center", justifyContent: "center", flexGrow: 1 },
   feedTitle: { fontSize: 40, fontWeight: "bold", color: "blue", marginBottom: 20 },
-  mainButton: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-    marginBottom: 20,
-  },
+  mainButton: { paddingVertical: 16, paddingHorizontal: 32, borderRadius: 12, marginBottom: 20 },
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
   bottomBar: {
     flexDirection: "row",
@@ -99,9 +96,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
   },
-  bottomButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+  bottomButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
 });

@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage";
 import FeedPage from "./pages/FeedPage";
 import MatchmakingPage from "./pages/MatchmakingPage";
 import ChatPage from "./pages/ChatPage";
+import PerfilPage from "./pages/PerfilPage";
 
 
 
@@ -13,7 +14,8 @@ export type RootStackParamList = {
   LoginPage: undefined;
   FeedPage: undefined;
   MatchmakingPage: undefined;
-  ChatPage: undefined
+  ChatPage: undefined;
+  PerfilPage: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -26,6 +28,7 @@ export default function App() {
         <Stack.Screen name="FeedPage" component={FeedPage} options={{ title: "Feed" }} />
         <Stack.Screen name="MatchmakingPage" component={MatchmakingPage} options={{ title: "Matchmaking" }} />
         <Stack.Screen name="ChatPage" component={ChatPage}/>
+        <Stack.Screen name="PerfilPage" component={PerfilPage} options={{ title: "Perfil" }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
