@@ -1,27 +1,21 @@
 import React from "react";
 import { View, Text, StyleSheet, Button, ScrollView } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../App";
+import BottomBar from "../components/BottomBar";
 
 type PerfilPageNavigationProp = NativeStackNavigationProp<RootStackParamList, "PerfilPage">;
+type PerfilPageRouteProp = RouteProp<RootStackParamList, "PerfilPage">;
 
 type Props = {
-  nome?: string;
-  bio?: string;
-  habilidades?: string[];
-  email?: string;
-  empresa?: string;
+  route: PerfilPageRouteProp;
 };
 
-export default function PerfilPage({
-  nome = "Usuário Exemplo",
-  bio = "Bio do usuário",
-  habilidades = ["React", "TypeScript"],
-  email = "usuario@email.com",
-  empresa = "Empresa/Universidade",
-}: Props) {
+export default function PerfilPage({ route }: Props) {
   const navigation = useNavigation<PerfilPageNavigationProp>();
+  const { nome, bio, habilidades, email, empresa } = route.params || {};
+  const nomeUsuario = nome || "Usuário Exemplo";
 
   const handleLogout = () => {
     navigation.reset({
@@ -31,24 +25,31 @@ export default function PerfilPage({
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.iconContainer}>
-        <Text style={styles.icon}>👤</Text>
-      </View>
+    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.iconContainer}>
+          <Text style={styles.icon}>👤</Text>
+        </View>
 
-      <Text style={styles.nome}>Nome: {nome}</Text>
-      <Text style={styles.bio}>{bio}</Text>
-      <Text style={styles.habilidades}>Habilidades: {habilidades.join(", ")}</Text>
-      <Text style={styles.infoSecundaria}>(dados disponíveis apenas para você)</Text>
-      <Text style={styles.infoSecundaria}>E-mail: {email}</Text>
-      <Text style={styles.infoSecundaria}>Empresa/Universidade: {empresa}</Text>
+        <Text style={styles.nome}>Nome: {nome || "Usuário Exemplo"}</Text>
+        <Text style={styles.bio}>{bio || "Bio do usuário"}</Text>
+        <Text style={styles.habilidades}>
+          Habilidades: {(habilidades && habilidades.join(", ")) || "React, TypeScript"}
+        </Text>
+        <Text style={styles.infoSecundaria}>(dados disponíveis apenas para você)</Text>
+        <Text style={styles.infoSecundaria}>E-mail: {email || "usuario@email.com"}</Text>
+        <Text style={styles.infoSecundaria}>Empresa/Universidade: {empresa || "Empresa/Universidade"}</Text>
 
-      <View style={styles.logoutButton}>
-        <Button title="Logout" color="red" onPress={handleLogout} />
-      </View>
-    </ScrollView>
+        <View style={styles.logoutButton}>
+          <Button title="Logout" color="red" onPress={handleLogout} />
+        </View>
+      </ScrollView>
+
+      <BottomBar nomeUsuario={nomeUsuario} />
+    </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

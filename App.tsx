@@ -12,11 +12,12 @@ import PerfilPage from "./pages/PerfilPage";
 
 export type RootStackParamList = {
   LoginPage: undefined;
-  FeedPage: undefined;
-  MatchmakingPage: undefined;
+  FeedPage: { nome?: string };
+  MatchmakingPage: { nomeUsuario: string };
   ChatPage: undefined;
-  PerfilPage: undefined;
+  PerfilPage: { nome?: string; bio?: string; habilidades?: string[]; email?: string; empresa?: string };
 };
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -27,7 +28,7 @@ export default function App() {
         <Stack.Screen name="LoginPage" component={LoginPage} options={{ headerShown: false }} />
         <Stack.Screen name="FeedPage" component={FeedPage} options={{ title: "Feed" }} />
         <Stack.Screen name="MatchmakingPage" component={MatchmakingPage} options={{ title: "Matchmaking" }} />
-        <Stack.Screen name="ChatPage" component={ChatPage}/>
+        <Stack.Screen name="ChatPage" component={ChatPage} options={{ title: "Chat"}}/>
         <Stack.Screen name="PerfilPage" component={PerfilPage} options={{ title: "Perfil" }} />
       </Stack.Navigator>
     </NavigationContainer>

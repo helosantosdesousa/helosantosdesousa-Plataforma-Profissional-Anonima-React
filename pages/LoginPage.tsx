@@ -17,31 +17,25 @@ export default function LoginPage({ navigation }: Props) {
   const [senha, setSenha] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleLogin = async () => {
-    setLoading(true);
+const handleLogin = async () => {
+  setLoading(true);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (usuario === "admin" && senha === "123") {
-      setLoading(false);
+  if (usuario === "admin" && senha === "123") {
+    setLoading(false);
+    navigation.replace("FeedPage", { nome: usuario });
+  } else {
+    setLoading(false);
 
-      if (Platform.OS === "web") {
-        window.alert("Login bem-sucedido!");
-      } else {
-        Alert.alert("Login bem-sucedido!", "Você entrou com sucesso!");
-      }
-
-      navigation.replace("FeedPage");
+    if (Platform.OS === "web") {
+      window.alert("Erro no login: Usuário ou senha inválidos.");
     } else {
-      setLoading(false);
-
-      if (Platform.OS === "web") {
-        window.alert("Erro no login: Usuário ou senha inválidos.");
-      } else {
-        Alert.alert("Erro no login", "Usuário ou senha inválidos.");
-      }
+      Alert.alert("Erro no login", "Usuário ou senha inválidos.");
     }
-  };
+  }
+};
+
 
   return (
     <View style={styles.container}>
