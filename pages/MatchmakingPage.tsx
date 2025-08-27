@@ -1,9 +1,9 @@
 import React, { useState, useRef } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Platform } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../App";
 import BottomBar from "../components/BottomBar";
-import { PanGestureHandler } from "react-native-gesture-handler";
+import { PanGestureHandler, State } from "react-native-gesture-handler";
 
 type MatchmakingPageRouteProp = RouteProp<RootStackParamList, "MatchmakingPage">;
 
@@ -21,6 +21,16 @@ const perfis: Perfil[] = [
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
+const PALETTE = {
+  bg: "#F8FAFF",
+  card: "#FFFFFF",
+  border: "#E2E8F0",
+  text: "#0F172A",
+  sub: "#475569",
+  accept: "#10B981",
+  reject: "#EF4444",
+};
+
 export default function MatchmakingPage() {
   const route = useRoute<MatchmakingPageRouteProp>();
   const nomeUsuario = route.params?.nomeUsuario || "Usuário Exemplo";
@@ -34,15 +44,10 @@ export default function MatchmakingPage() {
     outputRange: ["-15deg", "0deg", "15deg"],
   });
 
-  const backgroundColor = translateX.interpolate({
-    inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
-    outputRange: ["#ccffcc", "#fff", "#ffcccc"],
-  });
-
   const perfilAtual = perfis[index];
 
   const proximoPerfil = () => {
-    if (index + 1 < perfis.length) setIndex(index + 1);
+    if (index + 1 < perfis.length) setIndex((i) => i + 1);
     else setAcabou(true);
     translateX.setValue(0);
   };
@@ -51,22 +56,21 @@ export default function MatchmakingPage() {
     const value = toRight ? SCREEN_WIDTH : -SCREEN_WIDTH;
     Animated.timing(translateX, {
       toValue: value,
-      duration: 200,
+      duration: 220,
       useNativeDriver: false,
     }).start(proximoPerfil);
   };
 
-  const onGestureEvent = Animated.event(
-    [{ nativeEvent: { translationX: translateX } }],
-    { useNativeDriver: false }
-  );
+  const onGestureEvent = Animated.event([{ nativeEvent: { translationX: translateX } }], {
+    useNativeDriver: false,
+  });
 
   const onHandlerStateChange = (event: any) => {
     const { translationX, state } = event.nativeEvent;
-    if (state === 5) { // END
-      if (translationX > SCREEN_WIDTH * 0.25) swipePerfil(true); 
+    if (state === State.END) {
+      if (translationX > SCREEN_WIDTH * 0.25) swipePerfil(true);
       else if (translationX < -SCREEN_WIDTH * 0.25) swipePerfil(false);
-      else Animated.spring(translateX, { toValue: 0, useNativeDriver: false }).start();
+      else Animated.spring(translateX, { toValue: 0, useNativeDriver: false, bounciness: 8 }).start();
     }
   };
 
@@ -85,27 +89,27 @@ export default function MatchmakingPage() {
     <View style={styles.container}>
       <View style={styles.content}>
         <PanGestureHandler onGestureEvent={onGestureEvent} onHandlerStateChange={onHandlerStateChange}>
-          <Animated.View
-            style={[styles.card, { transform: [{ translateX }, { rotate }], backgroundColor }]}
-          >
+          <Animated.View style={[styles.card, { transform: [{ translateX }, { rotate }] }]}>
             <Text style={styles.nome}>{perfilAtual.nome}</Text>
-            <Text style={styles.label}>Bio:</Text>
-            <Text>{perfilAtual.bio}</Text>
-            <Text style={styles.label}>Habilidades:</Text>
-            <Text>{perfilAtual.habilidades.join(", ")}</Text>
+            <Text style={styles.label}>Bio</Text>
+            <Text style={styles.text}>{perfilAtual.bio}</Text>
+            <Text style={[styles.label, { marginTop: 12 }]}>Habilidades</Text>
+            <Text style={styles.text}>{perfilAtual.habilidades.join(", ")}</Text>
           </Animated.View>
         </PanGestureHandler>
 
         <View style={styles.buttonRow}>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "green" }]}
-            onPress={() => swipePerfil(false)} 
+            style={[styles.button, { backgroundColor: PALETTE.accept }]}
+            activeOpacity={0.9}
+            onPress={() => swipePerfil(true)}
           >
             <Text style={styles.buttonText}>Aceitar</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: "red" }]}
-            onPress={() => swipePerfil(true)} 
+            style={[styles.button, { backgroundColor: PALETTE.reject }]}
+            activeOpacity={0.9}
+            onPress={() => swipePerfil(false)}
           >
             <Text style={styles.buttonText}>Recusar</Text>
           </TouchableOpacity>
@@ -117,19 +121,50 @@ export default function MatchmakingPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1, backgroundColor: PALETTE.bg },
   content: { flex: 1, justifyContent: "center", alignItems: "center", padding: 16 },
   card: {
     width: SCREEN_WIDTH - 40,
     padding: 24,
-    borderRadius: 16,
-    elevation: 5,
+    borderRadius: 20,
+    backgroundColor: PALETTE.card,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: PALETTE.border,
     marginBottom: 16,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOpacity: 0.12,
+        shadowOffset: { width: 0, height: 8 },
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
-  nome: { fontSize: 28, fontWeight: "bold", marginBottom: 16 },
-  label: { fontWeight: "bold", marginTop: 8 },
-  buttonRow: { flexDirection: "row", justifyContent: "space-between", width: SCREEN_WIDTH - 40 },
-  button: { flex: 1, padding: 14, borderRadius: 8, alignItems: "center", marginHorizontal: 6 },
-  buttonText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
-  fimText: { fontSize: 20, textAlign: "center", color: "gray", fontWeight: "bold", marginTop: 20 },
+  nome: { fontSize: 24, fontWeight: "700", color: PALETTE.text, marginBottom: 8 },
+  label: { fontSize: 14, fontWeight: "600", color: PALETTE.sub, marginBottom: 4 },
+  text: { fontSize: 16, color: PALETTE.text, lineHeight: 22 },
+  buttonRow: { flexDirection: "row", justifyContent: "space-between", width: SCREEN_WIDTH - 40, marginTop: 8 },
+  button: {
+    flex: 1,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginHorizontal: 6,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 6,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+  },
+  buttonText: { color: "#FFFFFF", fontSize: 16, fontWeight: "700" },
+  fimText: { fontSize: 18, textAlign: "center", color: PALETTE.sub, fontWeight: "700", marginTop: 20, paddingHorizontal: 24 },
 });
