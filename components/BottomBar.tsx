@@ -1,9 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../App";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 type BottomBarProps = {
   nomeUsuario: string;
@@ -22,7 +23,7 @@ export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps)
           style={[styles.bottomButton, styles.btnBlue]}
           onPress={onReloadFeed || (() => navigation.navigate("FeedPage", { nome: nomeUsuario }))}
         >
-          <Text style={styles.bottomButtonText}>Feed</Text>
+          <Icon name="home" size={28} color="#fff" />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -30,7 +31,7 @@ export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps)
           style={[styles.bottomButton, styles.btnGreen]}
           onPress={() => navigation.navigate("MatchmakingPage", { nomeUsuario })}
         >
-          <Text style={styles.bottomButtonText}>Match</Text>
+          <Icon name="favorite" size={28} color="#fff" />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -38,7 +39,7 @@ export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps)
           style={[styles.bottomButton, styles.btnPurple]}
           onPress={() => navigation.navigate("ChatPage")}
         >
-          <Text style={styles.bottomButtonText}>Chat</Text>
+          <Icon name="chat" size={28} color="#fff" />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -46,7 +47,7 @@ export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps)
           style={[styles.bottomButton, styles.btnPink]}
           onPress={() => navigation.navigate("PerfilPage", { nome: nomeUsuario })}
         >
-          <Text style={styles.bottomButtonText}>Perfil</Text>
+          <Icon name="person" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -106,9 +107,4 @@ const styles = StyleSheet.create({
   btnGreen: { backgroundColor: "#10B981" }, 
   btnPurple: { backgroundColor: "#8B5CF6" }, 
   btnPink: { backgroundColor: "#EC4899" },   
-  bottomButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
 });
