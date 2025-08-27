@@ -1,94 +1,315 @@
+// LoginPage.tsx
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, ActivityIndicator, StyleSheet, Alert, Platform } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  Alert,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+  Image,
+} from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "LoginPage"
->;
+type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "LoginPage">;
 
 type Props = {
   navigation: LoginScreenNavigationProp;
+};
+
+const PALETTE = {
+  primary: "#3B82F6",
+  primaryDark: "#2563EB",
+  accent: "#8B5CF6",
+  bg: "#F8FAFF",
+  text: "#0F172A",
+  subtext: "#64748B",
+  inputBg: "#EEF2FF",
+  inputBorder: "#CBD5E1",
+  white: "#FFFFFF",
 };
 
 export default function LoginPage({ navigation }: Props) {
   const [usuario, setUsuario] = useState<string>("");
   const [senha, setSenha] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
-const handleLogin = async () => {
-  setLoading(true);
+  const isDisabled = !usuario.trim() || !senha.trim();
 
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  if (usuario === "admin" && senha === "123") {
-    setLoading(false);
-    navigation.replace("FeedPage", { nome: usuario });
-  } else {
-    setLoading(false);
-
-    if (Platform.OS === "web") {
-      window.alert("Erro no login: Usuário ou senha inválidos.");
+  const handleLogin = async () => {
+    if (isDisabled) return;
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    if (usuario === "admin" && senha === "123") {
+      setLoading(false);
+      navigation.replace("FeedPage", { nome: usuario });
     } else {
-      Alert.alert("Erro no login", "Usuário ou senha inválidos.");
+      setLoading(false);
+      const msg = "Erro no login: Usuário ou senha inválidos.";
+      if (Platform.OS === "web") {
+        window.alert(msg);
+      } else {
+        Alert.alert("Erro no login", "Usuário ou senha inválidos.");
+      }
     }
-  }
-};
-
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Plataforma Profissional Anônima</Text>
-      <Text style={styles.subtitle}>Autenticação segura</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: PALETTE.bg }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={{ flex: 1 }}>
+        <TouchableOpacity activeOpacity={1} style={StyleSheet.absoluteFill} onPress={Keyboard.dismiss} />
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <View style={styles.logo}>
+              <Image
+                source={{ uri: "https://via.placeholder.com/64" }}
+                style={{ width: 40, height: 40, borderRadius: 8 }}
+                resizeMode="cover"
+              />
+            </View>
+            <Text style={styles.title}>Plataforma Profissional Anônima</Text>
+            <Text style={styles.subtitle}>Autenticação segura</Text>
+          </View>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Usuário"
-        value={usuario}
-        onChangeText={setUsuario}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Senha"
-        secureTextEntry
-        value={senha}
-        onChangeText={setSenha}
-      />
+          <View style={styles.card}>
+            <View style={styles.inputWrapper}>
+              <Text style={styles.inputLabel}>Usuário</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="seu_usuário"
+                placeholderTextColor={PALETTE.subtext}
+                value={usuario}
+                onChangeText={setUsuario}
+                autoCapitalize="none"
+                autoCorrect={false}
+                returnKeyType="next"
+                accessibilityLabel="Campo de usuário"
+              />
+            </View>
 
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <Button title="Entrar" onPress={handleLogin} />
-      )}
-    </View>
+            <View style={styles.inputWrapper}>
+              <Text style={styles.inputLabel}>Senha</Text>
+              <View style={styles.passwordRow}>
+                <TextInput
+                  style={[styles.input, { flex: 1, marginBottom: 0 }]}
+                  placeholder="•••••••"
+                  placeholderTextColor={PALETTE.subtext}
+                  secureTextEntry={!showPassword}
+                  value={senha}
+                  onChangeText={setSenha}
+                  autoCapitalize="none"
+                  returnKeyType="done"
+                  onSubmitEditing={handleLogin}
+                  accessibilityLabel="Campo de senha"
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword((s) => !s)}
+                  style={styles.showBtn}
+                  activeOpacity={0.8}
+                  accessibilityRole="button"
+                  accessibilityLabel={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                >
+                  <Text style={styles.showBtnText}>{showPassword ? "Ocultar" : "Mostrar"}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {loading ? (
+              <View style={styles.loginBtnDisabled}>
+                <ActivityIndicator size="small" color={PALETTE.white} />
+                <Text style={styles.loginBtnText}>Entrando...</Text>
+              </View>
+            ) : (
+              <TouchableOpacity
+                onPress={handleLogin}
+                disabled={isDisabled}
+                activeOpacity={0.9}
+                style={[styles.loginBtn, isDisabled && styles.loginBtnOff]}
+                accessibilityRole="button"
+                accessibilityLabel="Entrar"
+              >
+                <Text style={styles.loginBtnText}>Entrar</Text>
+              </TouchableOpacity>
+            )}
+
+            <View style={styles.footerLinks}>
+              <TouchableOpacity activeOpacity={0.8}>
+                <Text style={styles.linkText}>Esqueci minha senha</Text>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.8}>
+                <Text style={styles.linkText}>Criar conta</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <Text style={styles.footnote}>© {new Date().getFullYear()} PPA</Text>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 24,
+    alignItems: "center",
     justifyContent: "center",
-    padding: 24,
-    backgroundColor: "#fff",
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  logo: {
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+    backgroundColor: PALETTE.primary,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOpacity: 0.15,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: "bold",
-    color: "blue",
+    color: PALETTE.text,
     textAlign: "center",
   },
   subtitle: {
-    fontSize: 18,
-    color: "gray",
+    fontSize: 14,
+    color: PALETTE.subtext,
     textAlign: "center",
-    marginBottom: 20,
+    marginTop: 4,
+  },
+  card: {
+    width: "100%",
+    marginTop: 16,
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: PALETTE.white,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: "#E2E8F0",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOpacity: 0.12,
+        shadowOffset: { width: 0, height: 8 },
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
+  },
+  inputWrapper: {
+    marginBottom: 14,
+  },
+  inputLabel: {
+    marginBottom: 6,
+    color: PALETTE.subtext,
+    fontSize: 13,
   },
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
+    borderColor: PALETTE.inputBorder,
+    backgroundColor: PALETTE.inputBg,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    color: PALETTE.text,
+    marginBottom: 8,
+  },
+  passwordRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  showBtn: {
+    marginLeft: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderRadius: 12,
+    backgroundColor: "#E9D5FF",
+  },
+  showBtnText: {
+    color: PALETTE.accent,
+    fontWeight: "600",
+  },
+  loginBtn: {
+    marginTop: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: PALETTE.primary,
+    borderWidth: 1,
+    borderColor: PALETTE.primaryDark,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOpacity: 0.18,
+        shadowOffset: { width: 0, height: 6 },
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+  },
+  loginBtnOff: {
+    backgroundColor: "#93C5FD",
+    borderColor: "#93C5FD",
+  },
+  loginBtnDisabled: {
+    marginTop: 8,
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: PALETTE.primary,
+    borderWidth: 1,
+    borderColor: PALETTE.primaryDark,
+    flexDirection: "row",
+    gap: 8,
+  },
+  loginBtnText: {
+    color: PALETTE.white,
+    fontWeight: "bold",
+    fontSize: 16,
+    marginLeft: 6,
+  },
+  footerLinks: {
+    marginTop: 14,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  linkText: {
+    color: PALETTE.primary,
+    fontWeight: "600",
+  },
+  footnote: {
+    marginTop: 16,
+    color: PALETTE.subtext,
+    fontSize: 12,
   },
 });
