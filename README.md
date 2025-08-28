@@ -1,5 +1,6 @@
 ﻿# Plataforma Profissional Anonima React
-
+rodar: npm start e selecionar um emulador ou usar o app expo go
+parar control c
 # Documentação da Migração: Flutter → React Native
   ##1. Benefícios da Migração e Valor Agregado ao Projeto
 
@@ -52,4 +53,5 @@ Fase 4 – Testes e Qualidade:
 Fase 5 – Funcionalidades Adicionais:
 
 Implementar notificações push, integração com câmeras
+
 
