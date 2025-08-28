@@ -44,6 +44,12 @@ export default function MatchmakingPage() {
     outputRange: ["-15deg", "0deg", "15deg"],
   });
 
+  const backgroundColor = translateX.interpolate({
+    inputRange: [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
+    outputRange: [PALETTE.reject, PALETTE.card, PALETTE.accept],
+    extrapolate: "clamp",
+  });
+
   const perfilAtual = perfis[index];
 
   const proximoPerfil = () => {
@@ -89,7 +95,7 @@ export default function MatchmakingPage() {
     <View style={styles.container}>
       <View style={styles.content}>
         <PanGestureHandler onGestureEvent={onGestureEvent} onHandlerStateChange={onHandlerStateChange}>
-          <Animated.View style={[styles.card, { transform: [{ translateX }, { rotate }] }]}>
+          <Animated.View style={[styles.card, { transform: [{ translateX }, { rotate }], backgroundColor }]}>
             <Text style={styles.nome}>{perfilAtual.nome}</Text>
             <Text style={styles.label}>Bio</Text>
             <Text style={styles.text}>{perfilAtual.bio}</Text>
@@ -127,7 +133,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH - 40,
     padding: 24,
     borderRadius: 20,
-    backgroundColor: PALETTE.card,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: PALETTE.border,
     marginBottom: 16,
