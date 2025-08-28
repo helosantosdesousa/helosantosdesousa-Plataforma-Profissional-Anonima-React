@@ -9,6 +9,7 @@ import FeedPage from "./pages/FeedPage";
 import MatchmakingPage from "./pages/MatchmakingPage";
 import ChatPage from "./pages/ChatPage";
 import PerfilPage from "./pages/PerfilPage";
+import JobPage from "./pages/JobPage"
 
 export type RootStackParamList = {
   LoginPage: undefined;
@@ -16,6 +17,7 @@ export type RootStackParamList = {
   MatchmakingPage: { nomeUsuario: string };
   ChatPage: undefined;
   PerfilPage: { nome?: string; bio?: string; habilidades?: string[]; email?: string; empresa?: string };
+  JobPage: undefined;
 };
 
 const PALETTE = {
@@ -64,6 +66,7 @@ export default function App() {
           <Stack.Screen name="MatchmakingPage" component={MatchmakingPage} options={{ title: "Matchmaking" }} />
           <Stack.Screen name="ChatPage" component={ChatPage} options={{ title: "Chat" }} />
           <Stack.Screen name="PerfilPage" component={PerfilPage} options={{ title: "Perfil" }} />
+          <Stack.Screen name="JobPage" component={JobPage} />
         </Stack.Navigator>
       </NavigationContainer>
     </GestureHandlerRootView>
