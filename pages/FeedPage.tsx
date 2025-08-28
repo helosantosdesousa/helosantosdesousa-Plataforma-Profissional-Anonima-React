@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { RouteProp, useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -91,6 +91,7 @@ const initialPosts: Post[] = [
   },
 ];
 
+
 export default function FeedPage({ route }: Props) {
   const navigation = useNavigation<FeedPageNavigationProp>();
   const nomeUsuario = route.params?.nome || "Usuário Exemplo";
@@ -98,6 +99,13 @@ export default function FeedPage({ route }: Props) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={[styles.feedContent, { paddingBottom: 80 }]}>
+        <TouchableOpacity
+          style={styles.jobButton}
+          onPress={() => navigation.navigate("JobPage")}
+        >
+          <Text style={styles.jobButtonText}>Vagas de Emprego</Text>
+        </TouchableOpacity>
+
         {initialPosts.map((post) => (
           <View key={post.id} style={styles.postCard}>
             <Text style={styles.postTitle}>{post.title}</Text>
@@ -128,4 +136,13 @@ const styles = StyleSheet.create({
   postTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 6, color: "#333" },
   postContent: { fontSize: 16, marginBottom: 6, color: "#555" },
   postAuthor: { fontSize: 14, color: "#888", textAlign: "right" },
+  jobButton: {
+    backgroundColor: "#10B981",
+    paddingVertical: 14,
+    borderRadius: 12,
+    width: "100%",
+    alignItems: "center",
+    marginVertical: 12,
+  },
+  jobButtonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
 });
