@@ -37,8 +37,8 @@ export default function PerfilPage({ route }: Props) {
           Habilidades: {(habilidades && habilidades.join(", ")) || "React, TypeScript"}
         </Text>
         <Text style={styles.infoSecundaria}>(dados disponíveis apenas para você)</Text>
-        <Text style={styles.infoSecundaria}>E-mail: {email || "usuario@email.com"}</Text>
-        <Text style={styles.infoSecundaria}>Empresa/Universidade: {empresa || "Empresa/Universidade"}</Text>
+        <Text style={styles.infoSecundaria}>E-mail: {email || "admin@fiap.com"}</Text>
+        <Text style={styles.infoSecundaria}>Empresa/Universidade: {empresa || "Faculdade X"}</Text>
 
         <View style={styles.logoutButton}>
           <Button title="Logout" color="red" onPress={handleLogout} />
