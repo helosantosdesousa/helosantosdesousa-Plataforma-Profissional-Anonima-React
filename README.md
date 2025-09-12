@@ -31,7 +31,7 @@ npm start
 ```
 
 ### Conta pra testes
-usuario: admin
+usuario: admin <br>
 senha: 123
 
 ## Grupo e RM
@@ -42,3 +42,4 @@ senha: 123
 | Francisco Henrique Lima   | 99545  |
 | Lucas Henrique Carrascosa | 99883  |
 | Pedro Reginato            | 550896 |
+
