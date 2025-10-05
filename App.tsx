@@ -12,6 +12,7 @@ import ChatPage from "./pages/ChatPage";
 import PerfilPage from "./pages/PerfilPage";
 import JobPage from "./pages/JobPage";
 import SignUpPage from "./pages/SignUpPage";
+import SettingsPage from "./pages/SettingsPage";
 
 export type RootStackParamList = {
   LoginPage: undefined;
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   PerfilPage: { nome?: string; bio?: string; habilidades?: string[]; email?: string; empresa?: string };
   JobPage: undefined;
   SignUpPage: undefined;
+  SettingsPage: undefined;
 };
 
 const PALETTE = {
@@ -72,6 +74,7 @@ export default function App() {
     <Stack.Screen name="PerfilPage" component={PerfilPage} options={{ title: "Perfil" }} />
     <Stack.Screen name="JobPage" component={JobPage} />
     <Stack.Screen name="SignUpPage" component={SignUpPage} options={{ title: "Criar Conta" }} />
+    <Stack.Screen name="SettingsPage" component={SettingsPage} options={{ title: "Configurações" }} />
   </Stack.Navigator>
 </NavigationContainer>
 

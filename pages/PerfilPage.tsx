@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Button, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Button, ScrollView, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../App";
@@ -26,9 +26,18 @@ export default function PerfilPage({ route }: Props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      {/* Ícone de configurações no canto superior direito */}
+      <TouchableOpacity
+        style={styles.settingsButton}
+        onPress={() => navigation.navigate("SettingsPage")}
+      >
+        <Text style={styles.settingsIcon}>⚙️</Text>
+      </TouchableOpacity>
+
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.iconContainer}>
-          <Text style={styles.icon}>👤</Text>
+        {/* Avatar do usuário centralizado */}
+        <View style={styles.avatarContainer}>
+          <Text style={styles.avatar}>👤</Text>
         </View>
 
         <Text style={styles.nome}>Nome: {nome || "Usuário Exemplo"}</Text>
@@ -50,17 +59,33 @@ export default function PerfilPage({ route }: Props) {
   );
 }
 
-
 const styles = StyleSheet.create({
+  settingsButton: {
+    position: "absolute",
+    top: 40,
+    right: 24,
+    zIndex: 10,
+    padding: 8,
+  },
+  settingsIcon: {
+    fontSize: 32,
+    color: "gray",
+  },
   container: {
     flexGrow: 1,
-    padding: 24,
+    paddingTop: 120, // espaço para avatar e ícone de settings
+    paddingHorizontal: 24,
     alignItems: "center",
-    justifyContent: "center",
     backgroundColor: "#fff",
   },
-  iconContainer: { marginBottom: 20 },
-  icon: { fontSize: 100, color: "blue" },
+  avatarContainer: {
+    marginBottom: 24,
+    alignItems: "center",
+  },
+  avatar: {
+    fontSize: 100,
+    color: "blue",
+  },
   nome: { fontSize: 28, fontWeight: "bold", marginBottom: 10, textAlign: "center" },
   bio: { fontSize: 18, textAlign: "center", marginBottom: 10 },
   habilidades: { fontSize: 18, textAlign: "center", marginBottom: 10 },
