@@ -1,4 +1,3 @@
-// LoginPage.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -16,10 +15,10 @@ import {
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "LoginPage">;
+type SignUpScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, "SignUpPage">;
 
 type Props = {
-  navigation: LoginScreenNavigationProp;
+  navigation: SignUpScreenNavigationProp;
 };
 
 const PALETTE = {
@@ -34,30 +33,31 @@ const PALETTE = {
   white: "#FFFFFF",
 };
 
-export default function LoginPage({ navigation }: Props) {
+export default function SignUpPage({ navigation }: Props) {
   const [usuario, setUsuario] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [senha, setSenha] = useState<string>("");
+  const [confSenha, setConfSenha] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfPassword, setShowConfPassword] = useState<boolean>(false);
 
-  const isDisabled = !usuario.trim() || !senha.trim();
+  const isDisabled = !usuario.trim() || !email.trim() || !senha.trim() || !confSenha.trim();
 
-  const handleLogin = async () => {
+  const handleSignUp = async () => {
     if (isDisabled) return;
+
+    if (senha !== confSenha) {
+      Alert.alert("Erro", "As senhas não coincidem.");
+      return;
+    }
+
     setLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    if (usuario === "admin" && senha === "123") {
-      setLoading(false);
-      navigation.replace("FeedPage", { nome: usuario });
-    } else {
-      setLoading(false);
-      const msg = "Erro no login: Usuário ou senha inválidos.";
-      if (Platform.OS === "web") {
-        window.alert(msg);
-      } else {
-        Alert.alert("Erro no login", "Usuário ou senha inválidos.");
-      }
-    }
+    setLoading(false);
+
+    Alert.alert("Sucesso", "Conta criada com sucesso!");
+    navigation.replace("FeedPage", { nome: usuario });
   };
 
   return (
@@ -68,17 +68,7 @@ export default function LoginPage({ navigation }: Props) {
       <View style={{ flex: 1 }}>
         <TouchableOpacity activeOpacity={1} style={StyleSheet.absoluteFill} onPress={Keyboard.dismiss} />
         <View style={styles.container}>
-          <View style={styles.header}>
-            <View style={styles.logo}>
-              <Image
-                source={{ uri: "https://via.placeholder.com/64" }}
-                style={{ width: 40, height: 40, borderRadius: 8 }}
-                resizeMode="cover"
-              />
-            </View>
-            <Text style={styles.title}>Plataforma Profissional Anônima</Text>
-            <Text style={styles.subtitle}>Autenticação segura</Text>
-          </View>
+          
 
           <View style={styles.card}>
             <View style={styles.inputWrapper}>
@@ -91,8 +81,20 @@ export default function LoginPage({ navigation }: Props) {
                 onChangeText={setUsuario}
                 autoCapitalize="none"
                 autoCorrect={false}
-                returnKeyType="next"
-                accessibilityLabel="Campo de usuário"
+              />
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <Text style={styles.inputLabel}>Email</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="email@exemplo.com"
+                placeholderTextColor={PALETTE.subtext}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
               />
             </View>
 
@@ -107,18 +109,33 @@ export default function LoginPage({ navigation }: Props) {
                   value={senha}
                   onChangeText={setSenha}
                   autoCapitalize="none"
-                  returnKeyType="done"
-                  onSubmitEditing={handleLogin}
-                  accessibilityLabel="Campo de senha"
                 />
                 <TouchableOpacity
                   onPress={() => setShowPassword((s) => !s)}
                   style={styles.showBtn}
-                  activeOpacity={0.8}
-                  accessibilityRole="button"
-                  accessibilityLabel={showPassword ? "Ocultar senha" : "Mostrar senha"}
                 >
                   <Text style={styles.showBtnText}>{showPassword ? "Ocultar" : "Mostrar"}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputWrapper}>
+              <Text style={styles.inputLabel}>Confirmar Senha</Text>
+              <View style={styles.passwordRow}>
+                <TextInput
+                  style={[styles.input, { flex: 1, marginBottom: 0 }]}
+                  placeholder="•••••••"
+                  placeholderTextColor={PALETTE.subtext}
+                  secureTextEntry={!showConfPassword}
+                  value={confSenha}
+                  onChangeText={setConfSenha}
+                  autoCapitalize="none"
+                />
+                <TouchableOpacity
+                  onPress={() => setShowConfPassword((s) => !s)}
+                  style={styles.showBtn}
+                >
+                  <Text style={styles.showBtnText}>{showConfPassword ? "Ocultar" : "Mostrar"}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -126,32 +143,23 @@ export default function LoginPage({ navigation }: Props) {
             {loading ? (
               <View style={styles.loginBtnDisabled}>
                 <ActivityIndicator size="small" color={PALETTE.white} />
-                <Text style={styles.loginBtnText}>Entrando...</Text>
+                <Text style={styles.loginBtnText}>Criando conta...</Text>
               </View>
             ) : (
               <TouchableOpacity
-                onPress={handleLogin}
+                onPress={handleSignUp}
                 disabled={isDisabled}
                 activeOpacity={0.9}
                 style={[styles.loginBtn, isDisabled && styles.loginBtnOff]}
-                accessibilityRole="button"
-                accessibilityLabel="Entrar"
               >
-                <Text style={styles.loginBtnText}>Entrar</Text>
+                <Text style={styles.loginBtnText}>Criar Conta</Text>
               </TouchableOpacity>
             )}
 
             <View style={styles.footerLinks}>
-              <TouchableOpacity activeOpacity={0.8}>
-                <Text style={styles.linkText}>Esqueci minha senha</Text>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Text style={styles.linkText}>Voltar ao login</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-  activeOpacity={0.8} 
-  onPress={() => navigation.navigate("SignUpPage")}
->
-  <Text style={styles.linkText}>Criar conta</Text>
-</TouchableOpacity>
-
             </View>
           </View>
 
@@ -317,3 +325,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
+
