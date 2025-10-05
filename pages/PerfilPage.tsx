@@ -88,7 +88,6 @@ export default function PerfilPage({ route }: Props) {
           {/* Nome */}
           <Text style={styles.nome}> {nome || "Usuário Exemplo"}</Text>
 
-          {/* Bio */}
           <Text style={styles.label}>Bio:</Text>
           <TextInput
             style={styles.input}
