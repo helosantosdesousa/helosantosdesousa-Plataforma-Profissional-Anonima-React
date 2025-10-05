@@ -4,12 +4,14 @@ import { NavigationContainer, DefaultTheme, Theme } from "@react-navigation/nati
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
+
 import LoginPage from "./pages/LoginPage";
 import FeedPage from "./pages/FeedPage";
 import MatchmakingPage from "./pages/MatchmakingPage";
 import ChatPage from "./pages/ChatPage";
 import PerfilPage from "./pages/PerfilPage";
-import JobPage from "./pages/JobPage"
+import JobPage from "./pages/JobPage";
+import SignUpPage from "./pages/SignUpPage";
 
 export type RootStackParamList = {
   LoginPage: undefined;
@@ -18,6 +20,7 @@ export type RootStackParamList = {
   ChatPage: undefined;
   PerfilPage: { nome?: string; bio?: string; habilidades?: string[]; email?: string; empresa?: string };
   JobPage: undefined;
+  SignUpPage: undefined;
 };
 
 const PALETTE = {
@@ -39,6 +42,7 @@ const AppTheme: Theme = {
   },
 };
 
+
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
@@ -49,26 +53,28 @@ export default function App() {
         backgroundColor={PALETTE.primary}
         translucent={false}
       />
-      <NavigationContainer theme={AppTheme}>
-        <Stack.Navigator
-          initialRouteName="LoginPage"
-          screenOptions={{
-            headerStyle: { backgroundColor: PALETTE.primary },
-            headerTintColor: PALETTE.textOnPrimary,
-            headerTitleStyle: { fontWeight: "700" },
-            headerTitleAlign: "center",
-            contentStyle: { backgroundColor: PALETTE.background },
-            headerLargeTitle: Platform.OS === "ios",
-          }}
-        >
-          <Stack.Screen name="LoginPage" component={LoginPage} options={{ headerShown: false }} />
-          <Stack.Screen name="FeedPage" component={FeedPage} options={{ title: "Feed" }} />
-          <Stack.Screen name="MatchmakingPage" component={MatchmakingPage} options={{ title: "Matchmaking" }} />
-          <Stack.Screen name="ChatPage" component={ChatPage} options={{ title: "Chat" }} />
-          <Stack.Screen name="PerfilPage" component={PerfilPage} options={{ title: "Perfil" }} />
-          <Stack.Screen name="JobPage" component={JobPage} />
-        </Stack.Navigator>
-      </NavigationContainer>
+     <NavigationContainer theme={AppTheme}>
+  <Stack.Navigator
+    initialRouteName="LoginPage"
+    screenOptions={{
+      headerStyle: { backgroundColor: PALETTE.primary },
+      headerTintColor: PALETTE.textOnPrimary,
+      headerTitleStyle: { fontWeight: "700" },
+      headerTitleAlign: "center",
+      contentStyle: { backgroundColor: PALETTE.background },
+      headerLargeTitle: Platform.OS === "ios",
+    }}
+  >
+    <Stack.Screen name="LoginPage" component={LoginPage} options={{ headerShown: false }} />
+    <Stack.Screen name="FeedPage" component={FeedPage} options={{ title: "Feed" }} />
+    <Stack.Screen name="MatchmakingPage" component={MatchmakingPage} options={{ title: "Matchmaking" }} />
+    <Stack.Screen name="ChatPage" component={ChatPage} options={{ title: "Chat" }} />
+    <Stack.Screen name="PerfilPage" component={PerfilPage} options={{ title: "Perfil" }} />
+    <Stack.Screen name="JobPage" component={JobPage} />
+    <Stack.Screen name="SignUpPage" component={SignUpPage} options={{ title: "Criar Conta" }} />
+  </Stack.Navigator>
+</NavigationContainer>
+
     </GestureHandlerRootView>
   );
 }
