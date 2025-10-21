@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,6 +10,10 @@ import {
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "expo-router";
+
+
 
 type Message = { text: string; isUser: boolean };
 
@@ -21,6 +24,12 @@ export default function ChatPage() {
   const insets = useSafeAreaInsets();
 
   const nomeContato = route.params?.nomeContato || "Contato";
+
+  const navigation = useNavigation();
+  
+    useEffect(() => {
+      navigation.setOptions({ title: "Chat" });
+    }, [navigation]);
 
   const sendMessage = () => {
     if (!inputText.trim()) return;

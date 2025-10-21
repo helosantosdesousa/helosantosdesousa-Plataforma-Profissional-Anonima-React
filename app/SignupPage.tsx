@@ -13,6 +13,10 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
+import { useEffect } from "react";
+import { useNavigation } from "expo-router";
+
+
 const PALETTE = {
   primary: "#3B82F6",
   primaryDark: "#2563EB",
@@ -36,6 +40,13 @@ export default function SignUpPage() {
   const [showConfPassword, setShowConfPassword] = useState(false);
 
   const isDisabled = !usuario.trim() || !email.trim() || !senha.trim() || !confSenha.trim();
+
+  const navigation = useNavigation();
+
+useEffect(() => {
+  navigation.setOptions({ title: "Criar uma conta" });
+}, [navigation]);
+
 
   const handleSignUp = async () => {
     if (isDisabled) return;

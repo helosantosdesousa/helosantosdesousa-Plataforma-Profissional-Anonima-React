@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   View,
   Text,
@@ -11,6 +10,9 @@ import {
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "expo-router";
+
 
 export default function CreatePostPage({ params }: { params: { nomeUsuario?: string } }) {
   const router = useRouter();
@@ -18,6 +20,13 @@ export default function CreatePostPage({ params }: { params: { nomeUsuario?: str
 
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
+   const navigation = useNavigation();
+  
+    useEffect(() => {
+      navigation.setOptions({ title: "Fazer um post" });
+    },[navigation]);
+
 
   const handleCreatePost = () => {
     if (!title.trim() || !content.trim()) {
@@ -32,7 +41,6 @@ export default function CreatePostPage({ params }: { params: { nomeUsuario?: str
       author: nomeUsuario,
     };
 
-    // Volta para o FeedPage enviando post como JSON serializado
     router.push(`/FeedPage?novoPost=${encodeURIComponent(JSON.stringify(newPost))}`);
   };
 

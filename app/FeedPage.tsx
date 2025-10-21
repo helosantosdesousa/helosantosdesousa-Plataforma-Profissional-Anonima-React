@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-nati
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import BottomBar from "./components/BottomBar";
+import { useNavigation } from "expo-router";
+
 
 export type Post = {
   id: number;
@@ -21,6 +23,13 @@ const nomeUsuario = params.nome || "Usuário Exemplo";
 
 
   const [posts, setPosts] = useState<Post[]>(initialPosts);
+
+  const navigation = useNavigation();
+    
+      useEffect(() => {
+        navigation.setOptions({ title: "Feed" });
+      }, [navigation]);
+  
 
   useEffect(() => {
     if (params.novoPost) {

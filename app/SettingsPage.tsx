@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,10 @@ import { useNavigation } from "@react-navigation/native";
 export default function SettingsPage() {
   const navigation = useNavigation<any>();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+
+  useEffect(() => {
+    navigation.setOptions({ title: "Configurações" });
+  }, [navigation]);
 
   const handleDeleteAccount = () => {
     if (Platform.OS === "web") {

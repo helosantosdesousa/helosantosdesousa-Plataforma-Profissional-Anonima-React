@@ -9,6 +9,8 @@ import {
   Linking,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "expo-router";
+
 
 type Job = {
   id: number;
@@ -22,6 +24,11 @@ export default function JobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({ title: "Vagas de emprego" });
+  }, [navigation]);
 
   const fetchJobs = async () => {
     setLoading(true);

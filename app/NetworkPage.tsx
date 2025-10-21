@@ -1,5 +1,6 @@
-import React, { useState } from "react";
 import { View, Text, FlatList, StyleSheet, Pressable, ScrollView } from "react-native";
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "expo-router";
 
 type Newsletter = { id: string; nome: string };
 type Conexao = {
@@ -26,6 +27,11 @@ const conexoesComuns: Conexao[] = [
 export default function ConexoesPage() {
   const [abaAtiva, setAbaAtiva] = useState<"newsletters" | "conexoes">("newsletters");
   const [perfilAberto, setPerfilAberto] = useState<Conexao | null>(null);
+
+  const navigation = useNavigation();
+      useEffect(() => {
+        navigation.setOptions({ title: "Minha rede" });
+      }, [navigation]);
 
   const renderNewsletters = () => (
     <FlatList

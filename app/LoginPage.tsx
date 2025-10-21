@@ -13,6 +13,9 @@ import {
   Image,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useNavigation } from "expo-router";
+import { useEffect } from "react";
+
 
 const PALETTE = {
   primary: "#3B82F6",
@@ -34,6 +37,13 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const isDisabled = !usuario.trim() || !senha.trim();
+
+  const navigation = useNavigation();
+
+useEffect(() => {
+  navigation.setOptions({ headerShown: false });
+}, [navigation]);
+
 
  const handleLogin = async () => {
   if (isDisabled) return;

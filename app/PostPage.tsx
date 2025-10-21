@@ -1,15 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   ScrollView,
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
 } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { useNavigation } from "expo-router";
 
 type Post = {
   id: number;
@@ -21,12 +22,15 @@ type Post = {
 export default function PostPage() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const post: Post = params.post ? JSON.parse(params.post as string) : {
-    id: 0,
-    title: "Post não encontrado",
-    content: "",
-    author: "Desconhecido",
-  };
+  const post: Post = params.post
+    ? JSON.parse(params.post as string)
+    : { id: 0, title: "Post não encontrado", content: "", author: "Desconhecido" };
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({ title: "Post" });
+  }, [navigation]);
 
   const [likes, setLikes] = useState(0);
   const [commentText, setCommentText] = useState("");
@@ -54,12 +58,15 @@ export default function PostPage() {
           <Text style={styles.content}>{post.content}</Text>
 
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.actionButton} onPress={() => setLikes(likes + 1)}>
+            <Pressable style={styles.actionButton} onPress={() => setLikes(likes + 1)}>
               <Text style={styles.likeText}>❤️ {likes}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton} onPress={() => setShowCommentInput(!showCommentInput)}>
+            </Pressable>
+            <Pressable
+              style={styles.actionButton}
+              onPress={() => setShowCommentInput(!showCommentInput)}
+            >
               <Text style={styles.commentIcon}>💬 Comentar</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           {showCommentInput && (
@@ -73,9 +80,9 @@ export default function PostPage() {
                 blurOnSubmit={false}
                 returnKeyType="send"
               />
-              <TouchableOpacity style={styles.sendButton} onPress={handleAddComment}>
+              <Pressable style={styles.sendButton} onPress={handleAddComment}>
                 <Text style={styles.sendButtonText}>Enviar</Text>
-              </TouchableOpacity>
+              </Pressable>
             </View>
           )}
 
@@ -92,9 +99,15 @@ export default function PostPage() {
           )}
         </View>
 
-        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+        <Pressable
+          onPress={() => router.back()}
+          style={({ hovered }) => [
+            styles.backButton,
+            hovered && { backgroundColor: "#F3F4F6" }, 
+          ]}
+        >
           <Text style={styles.backButtonText}>← Voltar para Feed</Text>
-        </TouchableOpacity>
+        </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -139,6 +152,11 @@ const styles = StyleSheet.create({
   commentItem: { flexDirection: "row", marginBottom: 8 },
   commentBubble: { backgroundColor: "#E5E7EB", borderRadius: 16, padding: 12, maxWidth: "80%" },
   commentTextThread: { color: "#1F2937", fontSize: 15 },
-  backButton: { marginTop: 16, paddingVertical: 12, paddingHorizontal: 20, borderRadius: 8 },
-  backButtonText: { color: "#3B82F6", fontWeight: "600", fontSize: 16 },
+  backButton: {
+    marginTop: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+  },
+  backButtonText: { fontSize: 18, fontWeight: "700", color: "#3B82F6" },
 });

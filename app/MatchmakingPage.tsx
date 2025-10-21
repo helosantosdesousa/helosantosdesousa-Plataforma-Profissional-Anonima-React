@@ -1,7 +1,9 @@
-import React, { useState, useRef } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions, Platform } from "react-native";
 import BottomBar from "./components/BottomBar";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigation } from "expo-router";
+
 
 type Perfil = {
   nome: string;
@@ -28,7 +30,7 @@ const PALETTE = {
 };
 
 export default function MatchmakingPage({ route }: any) {
-  const nomeUsuario = route?.params?.nomeUsuario || "Usuário Exemplo";
+  const nomeUsuario = route?.params?.nomeUsuario;
 
   const [index, setIndex] = useState(0);
   const [acabou, setAcabou] = useState(false);
@@ -44,6 +46,13 @@ export default function MatchmakingPage({ route }: any) {
     outputRange: [PALETTE.reject, PALETTE.card, PALETTE.accept],
     extrapolate: "clamp",
   });
+
+  const navigation = useNavigation();
+  
+    useEffect(() => {
+      navigation.setOptions({ title: "Matchmaking" });
+    }, [navigation]);
+
 
   const perfilAtual = perfis[index];
 

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,11 +9,19 @@ import {
   Platform,
   Keyboard,
 } from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import BottomBar from "./components/BottomBar";
+
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "expo-router";
 
 export default function PerfilPage() {
   const navigation = useNavigation<any>();
+  useEffect(() => {
+          navigation.setOptions({ title: "Perfil" });
+        }, [navigation]);
+
+
   const route = useRoute<any>();
 
   const { nome, bio, habilidades, email, empresa } = route.params || {};
