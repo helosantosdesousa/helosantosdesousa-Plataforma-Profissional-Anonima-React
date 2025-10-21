@@ -64,7 +64,12 @@ export default function PerfilPage() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <ScrollView
+  contentContainerStyle={[
+    styles.scrollContainer,
+    editMode && { backgroundColor: "#f0f0f0" },
+  ]}
+>
 
           <View style={styles.settingsContainer}>
             <TouchableOpacity
@@ -177,13 +182,14 @@ const styles = StyleSheet.create({
   editIconButton: { marginTop: 8, padding: 8 },
   editIcon: { fontSize: 28, color: "gray" },
   scrollContainer: {
-    flexGrow: 1,
-    paddingTop: 24,
-    paddingHorizontal: 24,
-    alignItems: "center",
-    paddingBottom: 180,
-    backgroundColor: "#fff",
-  },
+  flexGrow: 1,
+  paddingTop: 24,
+  paddingHorizontal: 24,
+  alignItems: "center",
+  paddingBottom: 180,
+  backgroundColor: "#fff",
+},
+
   avatarContainer: { marginBottom: 24, alignItems: "center" },
   avatar: { fontSize: 100, color: "blue" },
   nome: { fontSize: 28, fontWeight: "bold", marginBottom: 10, textAlign: "center" },
