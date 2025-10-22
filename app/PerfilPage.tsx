@@ -1,237 +1,255 @@
+import React, { useEffect } from "react"; 
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  Keyboard,
+  Image,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useRouter, useLocalSearchParams, useNavigation } from "expo-router";
 import BottomBar from "./components/BottomBar";
-import React, { useState, useEffect } from "react";
-import { useNavigation } from "expo-router";
 
-export default function PerfilPage() {
-  const navigation = useNavigation<any>();
-  const route = useRoute<any>();
+type AppRoutes =
+  | "/EditProfilePage"
+  | "/SettingsPage"
+  | "/SupportPage"
+  | "/LoginPage"
+  | "/NetworkPage"
+  | "/UserPostsPage";
 
-  const { nome, bio, habilidades, email, empresa } = route.params || {};
-  const nomeUsuario = nome || "Usuário";
+type ProfileAction = {
+  id: string;
+  label: string;
+  icon: string;
+  route: AppRoutes;
+  isDestructive?: boolean;
+};
 
-  const [userBio, setUserBio] = useState(bio || "");
-  const [userEmail, setUserEmail] = useState(email || "");
-  const [userEmpresa, setUserEmpresa] = useState(empresa || "");
-  const [userHabilidades, setUserHabilidades] = useState(habilidades || []);
-  const [newHabilidade, setNewHabilidade] = useState("");
-  const [editMode, setEditMode] = useState(false);
+const profileActions: ProfileAction[] = [
+  { id: "edit", label: "Editar Perfil", icon: "✏️", route: "/EditProfilePage" },
+  { id: "settings", label: "Configurações", icon: "⚙️", route: "/SettingsPage" },
+  { id: "support", label: "Ajuda e Suporte", icon: "❓", route: "/SupportPage" },
+  { id: "logout", label: "Sair da Conta", icon: "🚪", route: "/LoginPage", isDestructive: true },
+];
 
-  const totalConexoes = 3;
+export default function ProfilePage() {
+  const router = useRouter();
+  const params = useLocalSearchParams<{ nome?: string }>();
+  const navigation = useNavigation();
+
+  const nomeUsuario = params.nome || "Usuário Exemplo";
+  const mockHandle = `@${nomeUsuario.toLowerCase().replace(/\s/g, "_")}`;
 
   useEffect(() => {
-    navigation.setOptions({ title: "Perfil" });
+    navigation.setOptions({ title: "Meu Perfil" });
   }, [navigation]);
 
-  const handleLogout = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "LoginPage" }],
-    });
-  };
-
-  const handleSave = () => {
-    alert("Dados salvos com sucesso!");
-    setEditMode(false);
-    Keyboard.dismiss();
-  };
-
-  const addHabilidade = () => {
-    if (newHabilidade.trim() !== "") {
-      setUserHabilidades([...userHabilidades, newHabilidade.trim()]);
-      setNewHabilidade("");
-      Keyboard.dismiss();
+  const handleAction = (route: AppRoutes, isDestructive?: boolean) => {
+    if (isDestructive) {
+      router.replace(route as any);
+    } else {
+      router.push(route as any);
     }
   };
 
+  const handleNetworkPress = () => {
+    router.push(`/NetworkPage?nomeUsuario=${nomeUsuario}` as any);
+  };
+
+  const handleUserPostsPress = () => {
+    router.push(`/UserPostsPage?nomeUsuario=${nomeUsuario}` as any);
+  };
+
+  const StatsCard = ({ label, value, onPress }: { label: string; value: string; onPress?: () => void }) => (
+    <TouchableOpacity 
+      style={styles.statBox} 
+      onPress={onPress} 
+      disabled={!onPress}
+      activeOpacity={onPress ? 0.6 : 1}
+    >
+      <Text style={styles.statValue}>{value}</Text>
+      <Text style={styles.statLabel}>{label}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <View style={styles.container}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
-      >
-        <ScrollView
-          contentContainerStyle={[
-            styles.scrollContainer,
-            editMode && { backgroundColor: "#F2F6FA" },
-          ]}
-        >
-          {/* Botões de configuração e edição */}
-          <View style={styles.settingsContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("SettingsPage")}
-              style={styles.settingsButton}
-            >
-              <Text style={styles.settingsIcon}>⚙️</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.editIconButton}
-              onPress={() => setEditMode(!editMode)}
-            >
-              <Text style={styles.editIcon}>✏️</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Avatar */}
-          <View style={styles.avatarContainer}>
-            <Text style={styles.avatar}>👤</Text>
-          </View>
-
-          {/* Nome */}
-          <Text style={styles.nome}>{nomeUsuario}</Text>
-
-          <TouchableOpacity
-            style={styles.conexoesCard}
-            onPress={() => navigation.navigate("NetworkPage")}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.conexoesText}>{totalConexoes} Conexões</Text>
-            <Text style={styles.conexoesSubText}>Clique para ver sua rede</Text>
-          </TouchableOpacity>
-
-          {/* Informações */}
-          <Text style={styles.label}>Bio:</Text>
-          <TextInput
-            style={[styles.input, editMode && styles.inputEdit]}
-            placeholder="Conte um pouco sobre você, sua trajetória..."
-            value={userBio}
-            onChangeText={setUserBio}
-            multiline
-            editable={editMode}
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        
+        <View style={styles.profileHeader}>
+          <Image
+            source={{
+              uri: `https://placehold.co/100x100/2081C4/FFFFFF/png?text=${nomeUsuario.charAt(
+                0
+              )}`,
+            }}
+            style={styles.profileImage}
           />
+          <Text style={styles.displayName}>{nomeUsuario}</Text>
+          <Text style={styles.handleText}>{mockHandle}</Text>
+        </View>
 
-          <Text style={styles.label}>E-mail:</Text>
-          <TextInput
-            style={[styles.input, editMode && styles.inputEdit]}
-            placeholder="Digite seu email profissional"
-            value={userEmail}
-            onChangeText={setUserEmail}
-            keyboardType="email-address"
-            editable={editMode}
-          />
+        
+        <View style={styles.statsContainer}>
+          <StatsCard label="Posts" value="12" onPress={handleUserPostsPress} />
+          <StatsCard label="Conexões" value="15" onPress={handleNetworkPress} />
+          <StatsCard label="Likes Recebidos" value="1.8K" />
+        </View>
 
-          <Text style={styles.label}>Empresa/Universidade:</Text>
-          <TextInput
-            style={[styles.input, editMode && styles.inputEdit]}
-            placeholder="Digite sua empresa ou universidade"
-            value={userEmpresa}
-            onChangeText={setUserEmpresa}
-            editable={editMode}
-          />
-
-          <Text style={styles.label}>Habilidades:</Text>
-          <View style={styles.habilidadesContainer}>
-            {userHabilidades.map((h: string, i: number) => (
-              <View key={i} style={styles.habilidadeBadge}>
-                <Text style={styles.habilidadeText}>{h}</Text>
-              </View>
-            ))}
-          </View>
-
-          {editMode && (
-            <TextInput
-              style={[styles.input, styles.inputEdit]}
-              placeholder="Digite uma habilidade e pressione Enter"
-              value={newHabilidade}
-              onChangeText={setNewHabilidade}
-              onSubmitEditing={addHabilidade}
-              blurOnSubmit={false}
-            />
-          )}
-
-          {editMode && (
-            <View style={styles.saveContainer}>
-              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                <Text style={styles.saveButtonText}>Salvar alterações</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {/* Logout */}
-          <View style={styles.logoutContainer}>
+        
+        <View style={styles.actionSection}>
+          <Text style={styles.sectionTitle}>Geral</Text>
+          {profileActions.slice(0, 3).map((action) => (
             <TouchableOpacity
-              style={styles.logoutButton}
-              onPress={handleLogout}
+              key={action.id}
+              style={styles.actionItem}
+              onPress={() => handleAction(action.route)}
               activeOpacity={0.7}
             >
-              <Text style={styles.logoutText}>Logout</Text>
+              <Text style={styles.actionIcon}>{action.icon}</Text>
+              <Text style={styles.actionLabel}>{action.label}</Text>
             </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          ))}
+        </View>
 
-      <BottomBar nomeUsuario={nomeUsuario} />
-    </View>
+        
+        <View style={styles.actionSection}>
+          <Text style={styles.sectionTitle}>Sessão</Text>
+          {profileActions.slice(3).map((action) => (
+            <TouchableOpacity
+              key={action.id}
+              style={styles.actionItem}
+              onPress={() => handleAction(action.route, action.isDestructive)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.actionIcon, styles.destructiveIcon]}>
+                {action.icon}
+              </Text>
+              <Text style={[styles.actionLabel, styles.destructiveLabel]}>
+                {action.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+
+      <BottomBar 
+        nomeUsuario={nomeUsuario} 
+        onReloadFeed={() => router.replace(`/FeedPage?nome=${nomeUsuario}` as any)} 
+      />
+
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F5F7FA" },
-  scrollContainer: { flexGrow: 1, paddingTop: 24, paddingHorizontal: 24, alignItems: "center", paddingBottom: 180 },
-
-  settingsContainer: { width: "100%", flexDirection: "row", justifyContent: "space-between", marginBottom: 16 },
-  settingsButton: { padding: 8 },
-  settingsIcon: { fontSize: 32, color: "#6B7280" },
-  editIconButton: { padding: 8 },
-  editIcon: { fontSize: 28, color: "#6B7280" },
-
-  avatarContainer: { marginBottom: 20, alignItems: "center" },
-  avatar: { fontSize: 100, backgroundColor: "#D1E8FF", padding: 24, borderRadius: 100, textAlign: "center" },
-
-  nome: { fontSize: 28, fontWeight: "bold", marginBottom: 10, textAlign: "center" },
-conexoesCard: {
-  backgroundColor: "rgba(220, 220, 220, 0.5)",
-  paddingVertical: 16,
-  paddingHorizontal: 24,
-  borderRadius: 16,
-  marginBottom: 24,
-  width: "100%",
-  alignItems: "center",
-  shadowColor: "#000",
-  shadowOpacity: 0.05,
-  shadowOffset: { width: 0, height: 2 },
-  shadowRadius: 4,
-  elevation: 3,
-},
-conexoesText: {
-  color: "#2563EB",
-  fontSize: 22,
-  fontWeight: "700",
-  textAlign: "center",
-},
-conexoesSubText: {
-  color: "#1E3A8A",
-  fontSize: 16,
-  fontWeight: "600",
-  textAlign: "center",
-  marginTop: 4,
-},
-  label: { fontSize: 16, fontWeight: "bold", marginTop: 12, alignSelf: "flex-start" },
-  input: { width: "100%", borderWidth: 1, borderColor: "#E0E0E0", borderRadius: 16, padding: 12, marginTop: 6, fontSize: 16, backgroundColor: "#F9FAFB" },
-  inputEdit: { borderColor: "#2563EB", backgroundColor: "#EFF6FF" },
-
-  habilidadesContainer: { flexDirection: "row", flexWrap: "wrap", marginVertical: 6 },
-  habilidadeBadge: { backgroundColor: "#D1E8FF", paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20, marginRight: 6, marginBottom: 6 },
-  habilidadeText: { fontSize: 14, color: "#2563EB", fontWeight: "600" },
-
-  saveContainer: { width: "80%", alignItems: "center", marginVertical: 12 },
-  saveButton: { backgroundColor: "#2563EB", paddingVertical: 14, paddingHorizontal: 40, borderRadius: 20, shadowColor: "#000", shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4 },
-  saveButtonText: { color: "#fff", fontSize: 18, fontWeight: "700", textAlign: "center" },
-
-  logoutContainer: { width: "100%", alignItems: "center", marginVertical: 12 },
-  logoutButton: { backgroundColor: "#FF4C4C", paddingVertical: 14, paddingHorizontal: 48, borderRadius: 30, shadowColor: "#FF4C4C", shadowOpacity: 0.3, shadowOffset: { width: 0, height: 4 }, shadowRadius: 6, elevation: 5 },
-  logoutText: { color: "#fff", fontSize: 18, fontWeight: "700", textAlign: "center", letterSpacing: 0.5 },
+  container: {
+    flex: 1,
+    backgroundColor: "#F0F3F7",
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 100,
+  },
+  profileHeader: {
+    alignItems: "center",
+    marginBottom: 30,
+    backgroundColor: "#FFFFFF",
+    padding: 24,
+    borderRadius: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
+    borderWidth: 3,
+    borderColor: "#2081C4",
+  },
+  displayName: {
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#1F2937",
+    marginBottom: 2,
+  },
+  handleText: {
+    fontSize: 16,
+    color: "#6B7280",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    paddingVertical: 15,
+    marginBottom: 30,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  statBox: {
+    alignItems: "center",
+    flex: 1,
+  },
+  statValue: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#2081C4",
+  },
+  statLabel: {
+    fontSize: 13,
+    color: "#6B7280",
+    marginTop: 4,
+  },
+  actionSection: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#4B5563",
+    marginBottom: 10,
+    paddingLeft: 10,
+  },
+  actionItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginBottom: 8,
+    shadowColor: "#000",
+    shadowOpacity: 0.03,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  actionIcon: {
+    fontSize: 20,
+    marginRight: 15,
+  },
+  actionLabel: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#1F2937",
+    flex: 1,
+  },
+  destructiveIcon: {
+    opacity: 0.8,
+  },
+  destructiveLabel: {
+    color: "#EF4444",
+    fontWeight: "600",
+  },
 });
