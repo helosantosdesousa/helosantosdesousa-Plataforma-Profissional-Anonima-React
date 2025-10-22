@@ -48,18 +48,19 @@ const nomeUsuario = params.nome || "Usuário Exemplo";
       <ScrollView contentContainerStyle={[styles.feedContent, { paddingBottom: 80 }]}>
         <View style={styles.topButtons}>
           <TouchableOpacity
+            style={styles.jobButton}
+            onPress={() => router.push("/JobPage")}
+          >
+            <Text style={styles.buttonText}>Vagas 💼</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.createPostButton}
            onPress={() => router.push(`/CreatePostPage?nomeUsuario=${nomeUsuario}`)}
           >
             <Text style={styles.buttonText}>Novo Post 📝</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.jobButton}
-            onPress={() => router.push("/JobPage")}
-          >
-            <Text style={styles.buttonText}>Vagas 💼</Text>
-          </TouchableOpacity>
+          
         </View>
 
         {posts.map(post => (

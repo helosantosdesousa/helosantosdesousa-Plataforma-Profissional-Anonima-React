@@ -1,7 +1,13 @@
-import React from "react";
-import { View, TouchableOpacity, StyleSheet, Platform } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  Pressable,
+} from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useRouter, usePathname } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 
 type BottomBarProps = {
@@ -12,41 +18,63 @@ type BottomBarProps = {
 export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const currentPath = usePathname(); // pega o caminho atual da rota
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  const buttons = [
+    {
+      name: "home",
+      color: "#3B82F6",
+      route: `/FeedPage?nome=${nomeUsuario}`,
+      isActive: currentPath.includes("FeedPage"),
+      action: onReloadFeed || (() => router.replace(`/FeedPage?nome=${nomeUsuario}`)),
+    },
+    {
+      name: "favorite",
+      color: "#EF4444",
+      route: `/MatchmakingPage?nomeUsuario=${nomeUsuario}`,
+      isActive: currentPath.includes("MatchmakingPage"),
+      action: () => router.push(`/MatchmakingPage?nomeUsuario=${nomeUsuario}`),
+    },
+    {
+      name: "chat",
+      color: "#8B5CF6",
+      route: "/ChatPage",
+      isActive: currentPath.includes("ChatPage"),
+      action: () => router.push("/ChatPage"),
+    },
+    {
+      name: "person",
+      color: "#10B981",
+      route: `/PerfilPage?nome=${nomeUsuario}`,
+      isActive: currentPath.includes("PerfilPage"),
+      action: () => router.push(`/PerfilPage?nome=${nomeUsuario}`),
+    },
+  ];
 
   return (
     <View style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, 8) }]}>
       <View style={styles.bottomBar}>
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={[styles.bottomButton, styles.btnBlue]}
-          onPress={onReloadFeed || (() => router.replace(`/FeedPage?nome=${nomeUsuario}`))}
-        >
-          <MaterialIcons name="home" size={28} color="#fff" />
-        </TouchableOpacity>
+        {buttons.map((btn, i) => {
+          const isHovered = hovered === btn.name;
+          const backgroundColor = btn.isActive
+            ? "rgba(0,0,0,0.06)"
+            : isHovered
+            ? "rgba(0,0,0,0.04)"
+            : "transparent";
 
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={[styles.bottomButton, styles.btnGreen]}
-          onPress={() => router.push(`/MatchmakingPage?nomeUsuario=${nomeUsuario}`)}
-        >
-          <MaterialIcons name="favorite" size={28} color="#fff" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={[styles.bottomButton, styles.btnPurple]}
-         onPress={() => router.push("/ChatPage")}
-        >
-          <MaterialIcons name="chat" size={28} color="#fff" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={[styles.bottomButton, styles.btnPink]}
-          onPress={() => router.push(`/PerfilPage?nome=${nomeUsuario}`)}
-        >
-          <MaterialIcons name="person" size={28} color="#fff" />
-        </TouchableOpacity>
+          return (
+            <Pressable
+              key={i}
+              onPress={btn.action}
+              onHoverIn={() => setHovered(btn.name)}
+              onHoverOut={() => setHovered(null)}
+              style={[styles.bottomButton, { backgroundColor }]}
+            >
+              <MaterialIcons name={btn.name as any} size={30} color={btn.color} />
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );
@@ -62,37 +90,29 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: "#000",
-        shadowOpacity: 0.12,
+        shadowOpacity: 0.08,
         shadowOffset: { width: 0, height: -2 },
-        shadowRadius: 6,
+        shadowRadius: 8,
       },
-      android: { elevation: 12 },
+      android: { elevation: 10 },
     }),
   },
   bottomBar: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 10,
+    justifyContent: "space-around",
+    paddingVertical: 12,
     paddingHorizontal: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: "#e5e5e5",
-    backgroundColor: "#fff",
+    borderTopColor: "#E5E7EB",
   },
   bottomButton: {
     flex: 1,
-    marginHorizontal: 6,
-    paddingVertical: 14,
-    borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-    ...Platform.select({
-      ios: { shadowColor: "#000", shadowOpacity: 0.1, shadowOffset: { width: 0, height: 2 }, shadowRadius: 4 },
-      android: { elevation: 3 },
-    }),
+    paddingVertical: 10,
+    borderRadius: 10,
+    transitionDuration: "150ms",
   },
-  btnBlue: { backgroundColor: "#3B82F6" },
-  btnGreen: { backgroundColor: "#10B981" },
-  btnPurple: { backgroundColor: "#8B5CF6" },
-  btnPink: { backgroundColor: "#EC4899" },
 });
