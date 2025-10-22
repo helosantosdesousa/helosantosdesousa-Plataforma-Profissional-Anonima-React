@@ -12,7 +12,7 @@ import {
 import { useRoute } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 
 type Message = { text: string; isUser: boolean };
 
@@ -26,10 +26,21 @@ export default function ChatPage() {
   const nomeContato = route.params?.nomeContato || "Contato";
 
   const navigation = useNavigation();
+  const router = useRouter();
 
   useEffect(() => {
-    navigation.setOptions({ title: nomeContato });
-  }, [navigation]);
+    navigation.setOptions({ 
+      title: nomeContato,
+      headerLeft: () => (
+        <TouchableOpacity 
+          onPress={() => router.back()}
+          style={{ paddingHorizontal: 10 }}
+        >
+          <Text style={{ fontSize: 28, color: '#2081C4' }}>←</Text>
+        </TouchableOpacity>
+      )
+    });
+  }, [navigation, nomeContato, router]);
 
   const sendMessage = () => {
     if (!inputText.trim()) return;
@@ -53,12 +64,12 @@ export default function ChatPage() {
         item.isUser ? styles.userMessage : styles.otherMessage,
       ]}
     >
-      <Text style={[styles.messageText, item.isUser && { color: "#0F172A" }]}>{item.text}</Text>
+      <Text style={[styles.messageText, item.isUser && styles.userMessageText]}>{item.text}</Text>
     </Animated.View>
   );
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#F5F7FA" }}>
+    <View style={{ flex: 1, backgroundColor: "#F0F3F7" }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -86,9 +97,9 @@ export default function ChatPage() {
           <TouchableOpacity
             style={styles.sendButton}
             onPress={sendMessage}
-            activeOpacity={0.8}
+            activeOpacity={0.7}
           >
-            <Text style={styles.sendText}>Enviar</Text>
+            <Text style={styles.sendText}>➤</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -98,31 +109,36 @@ export default function ChatPage() {
 
 const styles = StyleSheet.create({
   message: {
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 20,
-    marginVertical: 6,
-    maxWidth: "75%",
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
+    borderRadius: 18,
+    marginVertical: 4,
+    maxWidth: "80%",
     elevation: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 5,
   },
   userMessage: {
-    backgroundColor: "#D1E8FF",
+    backgroundColor: "#2081C4",
     alignSelf: "flex-end",
-    borderBottomRightRadius: 4,
+    borderBottomRightRadius: 6,
   },
   otherMessage: {
-    backgroundColor: "#E5E5E5",
+    backgroundColor: "#FFFFFF",
     alignSelf: "flex-start",
-    borderBottomLeftRadius: 4,
+    borderBottomLeftRadius: 6,
+    borderWidth: 1,
+    borderColor: '#E5E7EB'
   },
   messageText: {
     fontSize: 16,
     color: "#1F2937",
     lineHeight: 22,
+  },
+  userMessageText: {
+    color: "#FFFFFF",
   },
   inputRow: {
     flexDirection: "row",
@@ -135,29 +151,33 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 24,
     borderWidth: 1,
     borderColor: "#CBD5E1",
-    backgroundColor: "#F8FAFF",
+    backgroundColor: "#FFFFFF",
     fontSize: 16,
   },
   sendButton: {
     marginLeft: 8,
-    backgroundColor: "#2563EB",
+    backgroundColor: "#2081C4",
     paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    paddingHorizontal: 14,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+    elevation: 4,
   },
   sendText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: 20,
+    lineHeight: 20,
+    transform: [{ rotate: '-10deg' }], 
   },
 });

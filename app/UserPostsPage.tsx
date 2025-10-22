@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   FlatList,
 } from "react-native";
@@ -17,7 +16,6 @@ type Post = {
   author: string;
 };
 
-// Dados mockados de posts que pertenceriam ao usuário atual
 const mockUserPosts: Post[] = [
   { id: 101, title: "Refatorando o Design de Apps Mobile", content: "Apliquei os princípios de clean design e acessibilidade para modernizar nossa interface, focando em contraste e tipografia.", author: "Usuário Exemplo" },
   { id: 102, title: "Dicas de Produtividade com TypeScript", content: "Como configurar seu ambiente para tipagem estrita e evitar bugs comuns no desenvolvimento React.", author: "Usuário Exemplo" },

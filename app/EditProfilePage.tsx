@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter, useLocalSearchParams, useNavigation } from "expo-router";
 
-// Mock para simular o TextInput e manter a estética
+
 const MockInput = ({ label, value, placeholder, secureTextEntry = false, multiline = false, height = 50 }: {
   label: string,
   value: string,
@@ -51,14 +51,6 @@ export default function EditProfilePage() {
   useEffect(() => {
     navigation.setOptions({ title: "Editar Perfil" });
   }, [navigation]);
-
-  const handleSave = () => {
-    console.log("Dados Salvos:", { name, bio, email, company, skills });
-    // Lógica para salvar os dados no backend...
-
-    // Volta para a página de perfil após salvar
-    router.back();
-  };
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
@@ -126,8 +118,7 @@ export default function EditProfilePage() {
           </TouchableOpacity>
         </View>
 
-        {/* Botão Salvar */}
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave} activeOpacity={0.8}>
+        <TouchableOpacity style={styles.saveButton}activeOpacity={0.8}>
           <Text style={styles.saveButtonText}>Salvar Alterações</Text>
         </TouchableOpacity>
         
@@ -147,7 +138,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   
-  // Avatar Section
   avatarSection: {
     alignItems: "center",
     marginBottom: 30,
@@ -188,7 +178,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 
-  // Form Section (General Inputs)
   formSection: {
     backgroundColor: "#FFFFFF",
     padding: 20,
@@ -220,7 +209,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
 
-  // Skills Section
+
   skillsSection: {
     backgroundColor: "#FFFFFF",
     padding: 20,
@@ -284,7 +273,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   
-  // Save Button
   saveButton: {
     backgroundColor: "#2081C4",
     paddingVertical: 16,

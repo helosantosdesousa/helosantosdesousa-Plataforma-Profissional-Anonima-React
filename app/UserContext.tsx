@@ -1,4 +1,3 @@
-// UserContext.tsx
 import React, { createContext, useState, ReactNode, useContext } from "react";
 
 export type Conexao = {
