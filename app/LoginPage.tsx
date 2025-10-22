@@ -79,10 +79,10 @@ useEffect(() => {
         <View style={styles.header}>
           <View style={styles.logo}>
             <Image
-              source={{ uri: "https://via.placeholder.com/64" }}
-              style={{ width: 40, height: 40, borderRadius: 8 }}
-              resizeMode="cover"
-            />
+  source={require("../assets/images/ppa_logo.png")}
+  style={{ width: 80, height: 80, borderRadius: 16, marginBottom: 12 }}
+  resizeMode="contain"
+/>
           </View>
           <Text style={styles.title}>Plataforma Profissional Anônima</Text>
           <Text style={styles.subtitle}>Autenticação segura</Text>
