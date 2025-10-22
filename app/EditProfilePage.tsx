@@ -6,30 +6,39 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  Image,
+  Alert,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter, useLocalSearchParams, useNavigation } from "expo-router";
+import { useNavigation, useRouter, useLocalSearchParams } from "expo-router";
 
-
-const MockInput = ({ label, value, placeholder, secureTextEntry = false, multiline = false, height = 50 }: {
-  label: string,
-  value: string,
-  placeholder: string,
-  secureTextEntry?: boolean,
-  multiline?: boolean,
-  height?: number
+const MockInput = ({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  secureTextEntry = false,
+  multiline = false,
+  height = 50,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder: string;
+  secureTextEntry?: boolean;
+  multiline?: boolean;
+  height?: number;
 }) => (
   <View style={styles.inputGroup}>
     <Text style={styles.inputLabel}>{label}</Text>
     <TextInput
       style={[styles.input, multiline && { height, paddingTop: 12 }]}
       value={value}
+      onChangeText={onChangeText}
       placeholder={placeholder}
       placeholderTextColor="#9CA3AF"
       secureTextEntry={secureTextEntry}
       multiline={multiline}
-      textAlignVertical={multiline ? 'top' : 'center'}
+      textAlignVertical={multiline ? "top" : "center"}
     />
   </View>
 );
@@ -40,31 +49,72 @@ export default function EditProfilePage() {
   const navigation = useNavigation();
 
   const initialName = params.nome || "Usuário Exemplo";
-  const mockHandle = `@${initialName.toLowerCase().replace(/\s/g, '_')}`;
 
   const [name, setName] = useState(initialName);
-  const [bio, setBio] = useState("Desenvolvedor curioso focado em React Native e novas tecnologias.");
-  const [email, setEmail] = useState("usuario.exemplo@dev.com");
+  const [bio, setBio] = useState(
+    initialName === "Usuário Exemplo"
+      ? "Desenvolvedor curioso focado em React Native e novas tecnologias."
+      : `Olá, sou ${initialName} e estou focado em inovação e desenvolvimento.`
+  );
+  const [email, setEmail] = useState(
+    initialName === "Usuário Exemplo"
+      ? "usuario.exemplo@dev.com"
+      : `${initialName.toLowerCase().replace(/\s/g, ".")}@dev.com`
+  );
   const [company, setCompany] = useState("Tech Solutions Inc.");
-  const [skills, setSkills] = useState(["React Native", "TypeScript", "UI/UX"]);
+  const [skills, setSkills] = useState<string[]>([
+    "React Native",
+    "TypeScript",
+    "UI/UX",
+  ]);
+  const [newSkill, setNewSkill] = useState("");
 
   useEffect(() => {
     navigation.setOptions({ title: "Editar Perfil" });
   }, [navigation]);
 
   const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
   };
 
   const removeSkill = (skill: string) => {
-    setSkills(skills.filter(s => s !== skill));
+    setSkills(skills.filter((s) => s !== skill));
+  };
+
+  const addSkill = () => {
+    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
+      setSkills([...skills, newSkill.trim()]);
+      setNewSkill("");
+    }
+  };
+
+  const handleSave = () => {
+    const profileData = {
+      name,
+      email,
+      company,
+      bio,
+      skills,
+    };
+
+    console.log("Salvando perfil:", profileData);
+    // Substituindo Alert.alert por console.log
+    console.log("Sucesso: Perfil salvo com sucesso!"); 
+    // Alert.alert("Sucesso", "Perfil salvo com sucesso!");
+    
+    // Simula a volta para a página de perfil com o nome atualizado
+    router.replace(`/PerfilPage?nome=${encodeURIComponent(name)}`);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-
-        {/* Seção de Avatar */}
+        
         <View style={styles.avatarSection}>
           <View style={styles.avatarPlaceholder}>
             <Text style={styles.avatarText}>{getInitials(name)}</Text>
@@ -74,54 +124,74 @@ export default function EditProfilePage() {
           </TouchableOpacity>
         </View>
 
-        {/* Formulário Principal */}
+        
         <View style={styles.formSection}>
-          <MockInput 
-            label="Nome Completo" 
-            value={name} 
-            placeholder="Seu nome completo" 
+          <MockInput
+            label="Nome Completo"
+            value={name}
+            onChangeText={setName}
+            placeholder="Seu nome completo"
           />
-          <MockInput 
-            label="E-mail" 
-            value={email} 
-            placeholder="seu.email@exemplo.com" 
+          <MockInput
+            label="E-mail"
+            value={email}
+            onChangeText={setEmail}
+            placeholder="seu.email@exemplo.com"
           />
-          <MockInput 
-            label="Empresa Atual" 
-            value={company} 
-            placeholder="Nome da sua empresa" 
+          <MockInput
+            label="Empresa Atual"
+            value={company}
+            onChangeText={setCompany}
+            placeholder="Nome da sua empresa"
           />
-          <MockInput 
-            label="Bio (Resumo Pessoal)" 
-            value={bio} 
-            placeholder="Fale um pouco sobre você..." 
-            multiline={true} 
+          <MockInput
+            label="Bio (Resumo Pessoal)"
+            value={bio}
+            onChangeText={setBio}
+            placeholder="Fale um pouco sobre você..."
+            multiline
             height={100}
           />
         </View>
 
-        {/* Seção de Habilidades */}
+        
         <View style={styles.skillsSection}>
           <Text style={styles.sectionTitle}>Habilidades</Text>
           <View style={styles.habilidadesContainer}>
             {skills.map((skill, index) => (
               <View key={index} style={styles.habilidadeBadge}>
                 <Text style={styles.habilidadeText}>{skill}</Text>
-                <TouchableOpacity onPress={() => removeSkill(skill)} style={styles.removeButton}>
+                <TouchableOpacity
+                  onPress={() => removeSkill(skill)}
+                  style={styles.removeButton}
+                >
                   <Text style={styles.removeText}>x</Text>
                 </TouchableOpacity>
               </View>
             ))}
           </View>
-          <TouchableOpacity style={styles.addSkillButton} activeOpacity={0.7}>
-            <Text style={styles.addSkillText}>+ Adicionar Nova Habilidade</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <TextInput
+              style={[styles.input, { flex: 1, marginRight: 8 }]}
+              placeholder="Nova habilidade"
+              placeholderTextColor="#9CA3AF"
+              value={newSkill}
+              onChangeText={setNewSkill}
+            />
+            <TouchableOpacity style={styles.addSkillButton} onPress={addSkill} activeOpacity={0.7}>
+              <Text style={styles.addSkillText}>+ Adicionar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <TouchableOpacity style={styles.saveButton}activeOpacity={0.8}>
+        
+        <TouchableOpacity
+          style={styles.saveButton}
+          onPress={handleSave}
+          activeOpacity={0.8}
+        >
           <Text style={styles.saveButtonText}>Salvar Alterações</Text>
         </TouchableOpacity>
-        
       </ScrollView>
     </SafeAreaView>
   );
@@ -137,7 +207,7 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingBottom: 40,
   },
-  
+
   avatarSection: {
     alignItems: "center",
     marginBottom: 30,
@@ -154,27 +224,27 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#2081C4',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#2081C4",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 15,
     borderWidth: 3,
-    borderColor: '#E0F3FF',
+    borderColor: "#E0F3FF",
   },
   avatarText: {
     fontSize: 40,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
   changeAvatarButton: {
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderRadius: 8,
-    backgroundColor: '#E0F3FF',
+    backgroundColor: "#E0F3FF",
   },
   changeAvatarText: {
-    color: '#2081C4',
-    fontWeight: '700',
+    color: "#2081C4",
+    fontWeight: "700",
     fontSize: 14,
   },
 
@@ -205,10 +275,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 16,
     color: "#1F2937",
-    backgroundColor: '#F9FAFB',
+    backgroundColor: "#F9FAFB",
     height: 50,
   },
-
 
   skillsSection: {
     backgroundColor: "#FFFFFF",
@@ -233,19 +302,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   habilidadeBadge: {
-    flexDirection: 'row',
-    backgroundColor: "#E0F2F1", 
-    paddingHorizontal: 10, 
-    paddingVertical: 6, 
-    borderRadius: 15, 
-    marginRight: 8, 
-    marginBottom: 8, 
-    alignItems: 'center',
+    flexDirection: "row",
+    backgroundColor: "#E0F2F1",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 15,
+    marginRight: 8,
+    marginBottom: 8,
+    alignItems: "center",
   },
   habilidadeText: {
-    fontSize: 14, 
-    color: '#004D40',
-    fontWeight: '600',
+    fontSize: 14,
+    color: "#004D40",
+    fontWeight: "600",
     marginRight: 5,
   },
   removeButton: {
@@ -254,25 +323,25 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   removeText: {
-    color: '#004D40',
-    fontWeight: 'bold',
+    color: "#004D40",
+    fontWeight: "bold",
     fontSize: 12,
   },
   addSkillButton: {
     borderWidth: 1,
-    borderColor: '#2081C4',
+    borderColor: "#2081C4",
     borderRadius: 8,
     paddingVertical: 10,
-    alignItems: 'center',
-    borderStyle: 'dashed',
-    marginTop: 10,
+    alignItems: "center",
+    borderStyle: "dashed",
+    paddingHorizontal: 10,
   },
   addSkillText: {
-    color: '#2081C4',
-    fontWeight: '700',
+    color: "#2081C4",
+    fontWeight: "700",
     fontSize: 15,
   },
-  
+
   saveButton: {
     backgroundColor: "#2081C4",
     paddingVertical: 16,

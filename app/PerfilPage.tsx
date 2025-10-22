@@ -14,7 +14,6 @@ import BottomBar from "./components/BottomBar";
 type AppRoutes =
   | "/EditProfilePage"
   | "/SettingsPage"
-  | "/SupportPage"
   | "/LoginPage"
   | "/NetworkPage"
   | "/UserPostsPage";
@@ -23,14 +22,14 @@ type ProfileAction = {
   id: string;
   label: string;
   icon: string;
-  route: AppRoutes;
+  route: AppRoutes | null;
   isDestructive?: boolean;
 };
 
 const profileActions: ProfileAction[] = [
   { id: "edit", label: "Editar Perfil", icon: "✏️", route: "/EditProfilePage" },
   { id: "settings", label: "Configurações", icon: "⚙️", route: "/SettingsPage" },
-  { id: "support", label: "Ajuda e Suporte", icon: "❓", route: "/SupportPage" },
+  { id: "support", label: "Ajuda e Suporte", icon: "❓", route: null },
   { id: "logout", label: "Sair da Conta", icon: "🚪", route: "/LoginPage", isDestructive: true },
 ];
 
@@ -46,20 +45,30 @@ export default function ProfilePage() {
     navigation.setOptions({ title: "Meu Perfil" });
   }, [navigation]);
 
-  const handleAction = (route: AppRoutes, isDestructive?: boolean) => {
+  const handleAction = (route: AppRoutes | null, isDestructive?: boolean) => {
+    if (!route) {
+      console.log("ALERTA: Aviso - Esta funcionalidade ainda não está disponível.");
+      return;
+    }
+
+    if (route === "/EditProfilePage") {
+      router.push(`/EditProfilePage?nome=${encodeURIComponent(nomeUsuario)}`);
+      return;
+    }
+
     if (isDestructive) {
-      router.replace(route as any);
+      router.replace(route);
     } else {
-      router.push(route as any);
+      router.push(route);
     }
   };
 
   const handleNetworkPress = () => {
-    router.push(`/NetworkPage?nomeUsuario=${nomeUsuario}` as any);
+    router.push(`/NetworkPage?nomeUsuario=${nomeUsuario}`);
   };
 
   const handleUserPostsPress = () => {
-    router.push(`/UserPostsPage?nomeUsuario=${nomeUsuario}` as any);
+    router.push(`/UserPostsPage?nomeUsuario=${nomeUsuario}`);
   };
 
   const StatsCard = ({ label, value, onPress }: { label: string; value: string; onPress?: () => void }) => (
@@ -78,12 +87,11 @@ export default function ProfilePage() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
+        {/* Cabeçalho do Perfil */}
         <View style={styles.profileHeader}>
           <Image
             source={{
-              uri: `https://placehold.co/100x100/2081C4/FFFFFF/png?text=${nomeUsuario.charAt(
-                0
-              )}`,
+              uri: `https://placehold.co/100x100/2081C4/FFFFFF/png?text=${nomeUsuario.charAt(0)}`,
             }}
             style={styles.profileImage}
           />
@@ -91,14 +99,14 @@ export default function ProfilePage() {
           <Text style={styles.handleText}>{mockHandle}</Text>
         </View>
 
-        
+        {/* Estatísticas */}
         <View style={styles.statsContainer}>
-          <StatsCard label="Posts" value="12" onPress={handleUserPostsPress} />
+          <StatsCard label="Posts" value="4" onPress={handleUserPostsPress} />
           <StatsCard label="Conexões" value="15" onPress={handleNetworkPress} />
           <StatsCard label="Likes Recebidos" value="1.8K" />
         </View>
 
-        
+        {/* Ações Gerais */}
         <View style={styles.actionSection}>
           <Text style={styles.sectionTitle}>Geral</Text>
           {profileActions.slice(0, 3).map((action) => (
@@ -114,7 +122,7 @@ export default function ProfilePage() {
           ))}
         </View>
 
-        
+        {/* Sessão */}
         <View style={styles.actionSection}>
           <Text style={styles.sectionTitle}>Sessão</Text>
           {profileActions.slice(3).map((action) => (
@@ -124,12 +132,8 @@ export default function ProfilePage() {
               onPress={() => handleAction(action.route, action.isDestructive)}
               activeOpacity={0.7}
             >
-              <Text style={[styles.actionIcon, styles.destructiveIcon]}>
-                {action.icon}
-              </Text>
-              <Text style={[styles.actionLabel, styles.destructiveLabel]}>
-                {action.label}
-              </Text>
+              <Text style={[styles.actionIcon, styles.destructiveIcon]}>{action.icon}</Text>
+              <Text style={[styles.actionLabel, styles.destructiveLabel]}>{action.label}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -137,23 +141,16 @@ export default function ProfilePage() {
 
       <BottomBar 
         nomeUsuario={nomeUsuario} 
-        onReloadFeed={() => router.replace(`/FeedPage?nome=${nomeUsuario}` as any)} 
+        onReloadFeed={() => router.replace(`/FeedPage?nome=${nomeUsuario}`)} 
       />
-
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F0F3F7",
-  },
-  scrollContent: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: 100,
-  },
+  container: { flex: 1, backgroundColor: "#F0F3F7" },
+  scrollContent: { paddingHorizontal: 16, paddingTop: 20, paddingBottom: 100 },
+
   profileHeader: {
     alignItems: "center",
     marginBottom: 30,
@@ -166,24 +163,10 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
-    borderWidth: 3,
-    borderColor: "#2081C4",
-  },
-  displayName: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#1F2937",
-    marginBottom: 2,
-  },
-  handleText: {
-    fontSize: 16,
-    color: "#6B7280",
-  },
+  profileImage: { width: 100, height: 100, borderRadius: 50, marginBottom: 10, borderWidth: 3, borderColor: "#2081C4" },
+  displayName: { fontSize: 24, fontWeight: "800", color: "#1F2937", marginBottom: 2 },
+  handleText: { fontSize: 16, color: "#6B7280" },
+
   statsContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -197,30 +180,12 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  statBox: {
-    alignItems: "center",
-    flex: 1,
-  },
-  statValue: {
-    fontSize: 18,
-    fontWeight: "800",
-    color: "#2081C4",
-  },
-  statLabel: {
-    fontSize: 13,
-    color: "#6B7280",
-    marginTop: 4,
-  },
-  actionSection: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#4B5563",
-    marginBottom: 10,
-    paddingLeft: 10,
-  },
+  statBox: { alignItems: "center", flex: 1 },
+  statValue: { fontSize: 18, fontWeight: "800", color: "#2081C4" },
+  statLabel: { fontSize: 13, color: "#6B7280", marginTop: 4 },
+
+  actionSection: { marginBottom: 20 },
+  sectionTitle: { fontSize: 16, fontWeight: "700", color: "#4B5563", marginBottom: 10, paddingLeft: 10 },
   actionItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -235,21 +200,8 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-  actionIcon: {
-    fontSize: 20,
-    marginRight: 15,
-  },
-  actionLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#1F2937",
-    flex: 1,
-  },
-  destructiveIcon: {
-    opacity: 0.8,
-  },
-  destructiveLabel: {
-    color: "#EF4444",
-    fontWeight: "600",
-  },
+  actionIcon: { fontSize: 20, marginRight: 15 },
+  actionLabel: { fontSize: 16, fontWeight: "500", color: "#1F2937", flex: 1 },
+  destructiveIcon: { opacity: 0.8 },
+  destructiveLabel: { color: "#EF4444", fontWeight: "600" },
 });
