@@ -29,9 +29,9 @@ export default function ConexoesPage() {
   const [perfilAberto, setPerfilAberto] = useState<Conexao | null>(null);
 
   const navigation = useNavigation();
-      useEffect(() => {
-        navigation.setOptions({ title: "Minha rede" });
-      }, [navigation]);
+  useEffect(() => {
+    navigation.setOptions({ title: "Minha rede" });
+  }, [navigation]);
 
   const renderNewsletters = () => (
     <FlatList
@@ -51,23 +51,22 @@ export default function ConexoesPage() {
       return (
         <ScrollView contentContainerStyle={[styles.listContainer, { paddingTop: 40 }]}>
           <View style={styles.perfilContainer}>
-            <Text style={{ fontSize: 80, marginBottom: 20 }}>👤</Text>
+            <Text style={styles.avatar}>👤</Text>
             <Text style={styles.perfilNome}>{perfilAberto.nome}</Text>
-            <Text style={styles.perfilSub}>🔓 Informações disponíveis para você</Text>
+            <Text style={styles.perfilSub}>{perfilAberto.empresa}</Text>
 
             <Text style={styles.perfilLabel}>Bio:</Text>
-            <Text style={styles.perfilText}>{perfilAberto.bio}</Text>
+            <Text style={[styles.perfilText, { textAlign: "center" }]}>{perfilAberto.bio}</Text>
 
             <Text style={styles.perfilLabel}>E-mail:</Text>
-            <Text style={styles.perfilText}>{perfilAberto.email}</Text>
-
-            <Text style={styles.perfilLabel}>Empresa/Universidade:</Text>
-            <Text style={styles.perfilText}>{perfilAberto.empresa}</Text>
+            <Text style={[styles.perfilText, { textAlign: "center" }]}>{perfilAberto.email}</Text>
 
             <Text style={styles.perfilLabel}>Habilidades:</Text>
-            {perfilAberto.habilidades.map((h, i) => (
-              <Text key={i} style={styles.perfilText}>• {h}</Text>
-            ))}
+            <View style={styles.habilidadesContainer}>
+              {perfilAberto.habilidades.map((h, i) => (
+                <Text key={i} style={styles.habilidadeBadge}>{h}</Text>
+              ))}
+            </View>
 
             <Pressable onPress={() => setPerfilAberto(null)} style={styles.voltarButton}>
               <Text style={styles.voltarText}>Voltar</Text>
@@ -93,7 +92,7 @@ export default function ConexoesPage() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>👥 Minhas Conexões</Text>
+      <Text style={styles.title}>👥 Minha Rede</Text>
 
       <View style={styles.tabs}>
         <Pressable
@@ -116,49 +115,57 @@ export default function ConexoesPage() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F9FAFB" },
-  title: { fontSize: 22, fontWeight: "bold", textAlign: "center", marginVertical: 20, color: "#1E3A8A" },
-  tabs: { flexDirection: "row", justifyContent: "center", marginBottom: 16 },
-  tabButton: { paddingVertical: 10, paddingHorizontal: 20, borderBottomWidth: 2, borderBottomColor: "transparent" },
-  tabActive: { borderBottomColor: "#1E3A8A" },
-  tabText: { fontSize: 16, fontWeight: "bold", color: "#555" },
-  tabTextActive: { color: "#1E3A8A" },
-  listContainer: { paddingVertical: 16, paddingHorizontal: 0 }, 
+  container: { flex: 1, backgroundColor: "#F4F6FA" },
+  title: { fontSize: 24, fontWeight: "bold", textAlign: "center", marginVertical: 20, color: "#1E3A8A" },
+
+  tabs: { flexDirection: "row", justifyContent: "center", marginBottom: 16, borderBottomWidth: 1, borderBottomColor: "#E2E8F0" },
+  tabButton: { flex: 1, paddingVertical: 12 },
+  tabActive: { borderBottomColor: "#1E3A8A", borderBottomWidth: 3 },
+  tabText: { fontSize: 16, fontWeight: "500", color: "#888", textAlign: "center" },
+  tabTextActive: { color: "#1E3A8A", fontWeight: "700" },
+
+  listContainer: { paddingVertical: 16, paddingHorizontal: 16 },
 
   card: {
     backgroundColor: "#fff",
-    padding: 16,
+    padding: 20,
     marginVertical: 8,
-    borderRadius: 12,
-    width: "96%",        
+    borderRadius: 16,
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0px 2px 4px rgba(0,0,0,0.1)", 
-    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 4,
   },
   cardFull: {
     backgroundColor: "#fff",
-    padding: 16,
+    padding: 20,
     marginVertical: 8,
-    borderRadius: 12,
-    width: "98%",       
+    borderRadius: 16,
+    width: "100%",
     alignSelf: "center",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0px 2px 4px rgba(0,0,0,0.1)",
-    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 4,
   },
-  cardText: { fontSize: 17, color: "#111", textAlign: "center" },
+  cardText: { fontSize: 18, color: "#111", textAlign: "center" },
 
-  perfilContainer: {
-    width: "100%",
-    alignItems: "center",  
-  },
-  perfilNome: { fontSize: 24, fontWeight: "bold", marginBottom: 12, textAlign: "center" },
-  perfilSub: { fontSize: 16, color: "#555", marginBottom: 10, textAlign: "center" },
-  perfilLabel: { fontWeight: "bold", fontSize: 16, marginTop: 10, textAlign: "center" },
+  perfilContainer: { width: "100%", alignItems: "center", paddingHorizontal: 16 },
+  avatar: { fontSize: 90, marginBottom: 16 },
+  perfilNome: { fontSize: 26, fontWeight: "bold", marginBottom: 4, textAlign: "center" },
+  perfilSub: { fontSize: 18, color: "#555", marginBottom: 16, textAlign: "center" },
+  perfilLabel: { fontWeight: "bold", fontSize: 16, marginTop: 12, textAlign: "center" },
   perfilText: { fontSize: 16, color: "#111", marginBottom: 6, textAlign: "center" },
+  habilidadesContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", marginVertical: 8 },
+  habilidadeBadge: { backgroundColor: "#D1E8FF", paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16, margin: 4, fontSize: 14, textAlign: "center" },
 
-  voltarButton: { marginTop: 30, backgroundColor: "#1E3A8A", padding: 12, borderRadius: 8 },
-  voltarText: { color: "#fff", fontWeight: "bold", textAlign: "center" },
+  voltarButton: { marginTop: 30, backgroundColor: "#1E3A8A", paddingVertical: 14, paddingHorizontal: 50, borderRadius: 12 },
+  voltarText: { color: "#fff", fontWeight: "bold", fontSize: 16, textAlign: "center" },
 });
