@@ -11,21 +11,15 @@ import {
 } from "react-native";
 import { useRoute } from "@react-navigation/native";
 import BottomBar from "./components/BottomBar";
-
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "expo-router";
 
 export default function PerfilPage() {
   const navigation = useNavigation<any>();
-  useEffect(() => {
-          navigation.setOptions({ title: "Perfil" });
-        }, [navigation]);
-
-
   const route = useRoute<any>();
 
   const { nome, bio, habilidades, email, empresa } = route.params || {};
-  const nomeUsuario = nome;
+  const nomeUsuario = nome || "Usuário";
 
   const [userBio, setUserBio] = useState(bio || "");
   const [userEmail, setUserEmail] = useState(email || "");
@@ -35,6 +29,10 @@ export default function PerfilPage() {
   const [editMode, setEditMode] = useState(false);
 
   const totalConexoes = 3;
+
+  useEffect(() => {
+    navigation.setOptions({ title: "Perfil" });
+  }, [navigation]);
 
   const handleLogout = () => {
     navigation.reset({
@@ -58,19 +56,19 @@ export default function PerfilPage() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#fff" }}>
+    <View style={{ flex: 1, backgroundColor: "#F5F7FA" }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
         keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
       >
         <ScrollView
-  contentContainerStyle={[
-    styles.scrollContainer,
-    editMode && { backgroundColor: "#f0f0f0" },
-  ]}
->
-
+          contentContainerStyle={[
+            styles.scrollContainer,
+            editMode && { backgroundColor: "#EFF2F7" },
+          ]}
+        >
+          {/* Botões de configuração e edição */}
           <View style={styles.settingsContainer}>
             <TouchableOpacity
               onPress={() => navigation.navigate("SettingsPage")}
@@ -87,23 +85,26 @@ export default function PerfilPage() {
             </TouchableOpacity>
           </View>
 
+          {/* Avatar */}
           <View style={styles.avatarContainer}>
             <Text style={styles.avatar}>👤</Text>
           </View>
 
+          {/* Nome */}
           <Text style={styles.nome}>{nomeUsuario}</Text>
 
-
+          {/* Conexões */}
           <TouchableOpacity
             style={styles.conexoesCard}
             onPress={() => navigation.navigate("NetworkPage")}
           >
-            <Text style={styles.conexoesText}> {totalConexoes} conexões</Text>
+            <Text style={styles.conexoesText}>{totalConexoes} conexões</Text>
           </TouchableOpacity>
 
+          {/* Informações */}
           <Text style={styles.label}>Bio:</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, editMode && styles.inputEdit]}
             placeholder="Digite sua bio"
             value={userBio}
             onChangeText={setUserBio}
@@ -113,7 +114,7 @@ export default function PerfilPage() {
 
           <Text style={styles.label}>E-mail:</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, editMode && styles.inputEdit]}
             placeholder="Digite seu email"
             value={userEmail}
             onChangeText={setUserEmail}
@@ -123,7 +124,7 @@ export default function PerfilPage() {
 
           <Text style={styles.label}>Empresa/Universidade:</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, editMode && styles.inputEdit]}
             placeholder="Digite sua empresa ou universidade"
             value={userEmpresa}
             onChangeText={setUserEmpresa}
@@ -141,7 +142,7 @@ export default function PerfilPage() {
 
           {editMode && (
             <TextInput
-              style={styles.input}
+              style={[styles.input, styles.inputEdit]}
               placeholder="Digite uma habilidade e pressione Enter"
               value={newHabilidade}
               onChangeText={setNewHabilidade}
@@ -159,9 +160,14 @@ export default function PerfilPage() {
           )}
 
           <View style={styles.logoutContainer}>
-            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-              <Text style={styles.logoutText}>Logout</Text>
-            </TouchableOpacity>
+            <TouchableOpacity
+  style={styles.logoutButton}
+  onPress={handleLogout}
+  activeOpacity={0.7}
+>
+  <Text style={styles.logoutText}>Logout</Text>
+</TouchableOpacity>
+
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -172,50 +178,111 @@ export default function PerfilPage() {
 }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    paddingTop: 24,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    paddingBottom: 180,
+  },
   settingsContainer: {
     width: "100%",
-    alignItems: "flex-end",
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 16,
   },
   settingsButton: { padding: 8 },
-  settingsIcon: { fontSize: 32, color: "gray" },
-  editIconButton: { marginTop: 8, padding: 8 },
-  editIcon: { fontSize: 28, color: "gray" },
-  scrollContainer: {
-  flexGrow: 1,
-  paddingTop: 24,
-  paddingHorizontal: 24,
-  alignItems: "center",
-  paddingBottom: 180,
-  backgroundColor: "#fff",
-},
+  settingsIcon: { fontSize: 32, color: "#6B7280" },
+  editIconButton: { padding: 8 },
+  editIcon: { fontSize: 28, color: "#6B7280" },
 
-  avatarContainer: { marginBottom: 24, alignItems: "center" },
-  avatar: { fontSize: 100, color: "blue" },
+  avatarContainer: { marginBottom: 20, alignItems: "center" },
+  avatar: {
+    fontSize: 100,
+    backgroundColor: "#D1E8FF",
+    padding: 24,
+    borderRadius: 100,
+    textAlign: "center",
+    overflow: "hidden",
+  },
   nome: { fontSize: 28, fontWeight: "bold", marginBottom: 10, textAlign: "center" },
 
   conexoesCard: {
-    backgroundColor: "#f5f8ffff",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    backgroundColor: "#E5F0FF",
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 16,
     marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
   },
   conexoesText: {
-    color: "#00124fff",
+    color: "#2563EB",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "700",
     textAlign: "center",
   },
 
   label: { fontSize: 16, fontWeight: "bold", marginTop: 12, alignSelf: "flex-start" },
-  input: { width: "100%", borderWidth: 1, borderColor: "#ccc", borderRadius: 12, padding: 12, marginTop: 6, fontSize: 16, backgroundColor: "#f9f9f9" },
+  input: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+    borderRadius: 16,
+    padding: 12,
+    marginTop: 6,
+    fontSize: 16,
+    backgroundColor: "#F9FAFB",
+  },
+  inputEdit: {
+    borderColor: "#2563EB",
+    backgroundColor: "#EFF6FF",
+  },
+
   habilidadesContainer: { flexDirection: "row", flexWrap: "wrap", marginVertical: 6 },
-  habilidadeItem: { backgroundColor: "#e0e0e0", paddingHorizontal: 10, paddingVertical: 6, borderRadius: 20, marginRight: 6, marginBottom: 6 },
+  habilidadeItem: {
+    backgroundColor: "#E0E0E0",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 6,
+    marginBottom: 6,
+  },
+
   saveContainer: { width: "80%", alignItems: "center", marginVertical: 12 },
-  saveButton: { backgroundColor: "#4A90E2", paddingVertical: 12, paddingHorizontal: 40, borderRadius: 10, alignSelf: "center" },
-  saveButtonText: { color: "#fff", fontSize: 18, fontWeight: "bold", textAlign: "center" },
+  saveButton: {
+    backgroundColor: "#2563EB",
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 20,
+    alignSelf: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  saveButtonText: { color: "#fff", fontSize: 18, fontWeight: "700", textAlign: "center" },
+
   logoutContainer: { width: "100%", alignItems: "center", marginVertical: 12 },
-  logoutButton: { backgroundColor: "#F05454", paddingVertical: 12, paddingHorizontal: 40, borderRadius: 10, alignSelf: "center" },
-  logoutText: { color: "#fff", fontSize: 18, fontWeight: "bold", textAlign: "center" },
-});
+  logoutButton: {
+  backgroundColor: "#FF4C4C",
+  paddingVertical: 14,
+  paddingHorizontal: 48,
+  borderRadius: 30, 
+  alignSelf: "center",
+  shadowColor: "#FF4C4C",
+  shadowOpacity: 0.3,
+  shadowOffset: { width: 0, height: 4 },
+  shadowRadius: 6,
+  elevation: 5,
+},
+logoutText: {
+  color: "#fff",
+  fontSize: 18,
+  fontWeight: "700",
+  textAlign: "center",
+  letterSpacing: 0.5,
+}
+})
