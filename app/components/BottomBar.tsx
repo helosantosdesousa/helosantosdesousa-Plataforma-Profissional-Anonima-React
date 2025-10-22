@@ -18,20 +18,20 @@ type BottomBarProps = {
 export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const currentPath = usePathname(); // pega o caminho atual da rota
+  const currentPath = usePathname();
   const [hovered, setHovered] = useState<string | null>(null);
 
   const buttons = [
     {
       name: "home",
-      color: "#3B82F6",
+      color: "#2081C4",
       route: `/FeedPage?nome=${nomeUsuario}`,
       isActive: currentPath.includes("FeedPage"),
       action: onReloadFeed || (() => router.replace(`/FeedPage?nome=${nomeUsuario}`)),
     },
     {
       name: "favorite",
-      color: "#EF4444",
+      color: "#FF5733",
       route: `/MatchmakingPage?nomeUsuario=${nomeUsuario}`,
       isActive: currentPath.includes("MatchmakingPage"),
       action: () => router.push(`/MatchmakingPage?nomeUsuario=${nomeUsuario}`),
@@ -52,16 +52,22 @@ export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps)
     },
   ];
 
+  const getBackgroundColor = (isActive: boolean, isHovered: boolean) => {
+    if (isActive) {
+      return "rgba(32, 129, 196, 0.1)";
+    }
+    if (isHovered) {
+      return "rgba(0,0,0,0.04)";
+    }
+    return "transparent";
+  };
+
   return (
     <View style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, 8) }]}>
       <View style={styles.bottomBar}>
         {buttons.map((btn, i) => {
           const isHovered = hovered === btn.name;
-          const backgroundColor = btn.isActive
-            ? "rgba(0,0,0,0.06)"
-            : isHovered
-            ? "rgba(0,0,0,0.04)"
-            : "transparent";
+          const backgroundColor = getBackgroundColor(btn.isActive, isHovered);
 
           return (
             <Pressable
@@ -71,7 +77,7 @@ export default function BottomBar({ nomeUsuario, onReloadFeed }: BottomBarProps)
               onHoverOut={() => setHovered(null)}
               style={[styles.bottomButton, { backgroundColor }]}
             >
-              <MaterialIcons name={btn.name as any} size={30} color={btn.color} />
+              <MaterialIcons name={btn.name as any} size={28} color={btn.color} />
             </Pressable>
           );
         })}
@@ -86,24 +92,26 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
     ...Platform.select({
       ios: {
         shadowColor: "#000",
-        shadowOpacity: 0.08,
-        shadowOffset: { width: 0, height: -2 },
-        shadowRadius: 8,
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: -5 },
+        shadowRadius: 10,
       },
-      android: { elevation: 10 },
+      android: { elevation: 15 },
     }),
   },
   bottomBar: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: "#E5E7EB",
   },
@@ -111,8 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 10,
-    borderRadius: 10,
-    transitionDuration: "150ms",
+    paddingVertical: 8,
+    borderRadius: 15,
   },
 });
