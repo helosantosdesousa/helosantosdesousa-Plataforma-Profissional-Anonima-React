@@ -12,7 +12,6 @@ import { useRouter } from "expo-router";
 import React, { useState, useEffect } from "react";
 import { useNavigation, useLocalSearchParams } from "expo-router";
 
-// Substituindo Alert.alert por console.log para evitar problemas em ambientes de iframe
 const mockAlert = (title: string, message: string) => {
   console.log(`ALERTA: ${title} - ${message}`);
 };
@@ -64,7 +63,7 @@ export default function CreatePostPage() {
             style={styles.input}
             value={title}
             onChangeText={setTitle}
-            placeholder="Ex: Minha experiência com TypeScript em 2025"
+            placeholder="Ex: Minha experiência com Java"
             placeholderTextColor="#9CA3AF"
           />
         </View>

@@ -61,8 +61,10 @@ useEffect(() => {
     setLoading(false);
 
     Alert.alert("Sucesso", "Conta criada com sucesso!");
-    router.replace(`/FeedPage?nome=${encodeURIComponent(usuario)}`);
-
+router.replace({
+  pathname: "/FeedPage",
+  params: { nome: usuario },
+});
   };
 
   return (

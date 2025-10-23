@@ -23,7 +23,7 @@ export default function ChatPage() {
   const insets = useSafeAreaInsets();
   const flatListRef = useRef<FlatList>(null);
 
-  const nomeContato = route.params?.nomeContato || "Contato";
+  const nomeContato = route.params?.nomeContato || "Mensagens diretas";
 
   const navigation = useNavigation();
   const router = useRouter();
