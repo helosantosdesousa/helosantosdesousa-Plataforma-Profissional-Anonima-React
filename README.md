@@ -1,8 +1,8 @@
 # 🌐 PPA - Plataforma Profissional Anônima
 
-A Plataforma Profissional Anônima (PPA) é o projeto de desenvolvimento do grupo para o NEXT 2025. O PPA visa criar uma rede social de networking focada em privacidade e crescimento profissional.
+A Plataforma Profissional Anônima (PPA) é um ecossistema digital full-stack de networking e aprendizado. Seu objetivo é preencher uma lacuna no mercado ao combinar desenvolvimento de carreira e acesso a conteúdo especializado com total anonimato e segurança. A PPA oferece um ambiente inclusivo, permitindo que profissionais compartilhem experiências e busquem oportunidades puramente com base em competências, removendo o medo de julgamento e as barreiras sociais das redes tradicionais.
 
-Nossa plataforma permite que profissionais de tecnologia compartilhem experiências, façam perguntas delicadas, busquem mentoria e encontrem oportunidades de emprego de forma anônima ou sob um pseudônimo, promovendo a troca de conhecimento sem o risco de exposição ou julgamento.
+O projeto PPA foi reconhecido pela sua inovação e relevância no contexto da Sociedade 5.0, sendo selecionado para a fase final do evento **NEXT FIAP 2025**. Esta conquista valida nossa proposta de criar soluções tecnológicas que respondem a desafios reais do mercado de trabalho e reforça o compromisso do grupo com a excelência em desenvolvimento.
 
 ## 🚀 Como Executar o Projeto (Expo)
 
