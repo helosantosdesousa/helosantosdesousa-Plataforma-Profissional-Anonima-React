@@ -10,7 +10,7 @@ import {
   Platform,
   KeyboardAvoidingView,
   Keyboard,
-  Image,
+  Image, 
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useNavigation } from "expo-router";
@@ -92,6 +92,11 @@ export default function LoginPage() {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.logo}>
+            <Image
+              source={require("../assets/images/ppa_logo.png")}
+              style={{ width: 80, height: 80, borderRadius: 16 }}
+              resizeMode="contain"
+            />
           </View>
           <Text style={styles.title}>Plataforma Profissional Anônima</Text>
           <Text style={styles.subtitle}>Autenticação segura</Text>
@@ -171,13 +176,13 @@ const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 24, alignItems: "center", justifyContent: "center" },
   header: { alignItems: "center", marginBottom: 16 },
   logo: {
-    width: 64,
-    height: 64,
+    width: 80, // Aumentado para acomodar a imagem de 80x80
+    height: 80, // Aumentado para acomodar a imagem de 80x80
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     marginBottom: 12,
-    backgroundColor: PALETTE.primary,
+    backgroundColor: 'transparent', // Fundo transparente, pois a logo deve ter o dela
   },
   title: { fontSize: 20, fontWeight: "bold", color: PALETTE.text, textAlign: "center" },
   subtitle: { fontSize: 14, color: PALETTE.subtext, textAlign: "center", marginTop: 4 },
