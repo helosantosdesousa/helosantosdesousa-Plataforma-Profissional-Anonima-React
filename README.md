@@ -4,6 +4,8 @@ A Plataforma Profissional Anônima (PPA) é um ecossistema digital full-stack de
 
 O projeto PPA foi reconhecido pela sua inovação e relevância no contexto da Sociedade 5.0, sendo selecionado para a fase final do evento **NEXT FIAP 2025**. Esta conquista valida nossa proposta de criar soluções tecnológicas que respondem a desafios reais do mercado de trabalho e reforça o compromisso do grupo com a excelência em desenvolvimento.
 
+![Logo da PPA](assets/images/ppa_logo.png)
+
 ## 🚀 Como Executar o Projeto (Expo)
 
 Siga os passos abaixo para clonar o repositório e rodar o aplicativo em um emulador ou no seu dispositivo.
