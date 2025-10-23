@@ -1,6 +1,8 @@
 import { View, Text, FlatList, StyleSheet, Pressable, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router"; 
+import { SafeAreaView } from "react-native-safe-area-context";
+import BottomBar from "./components/BottomBar";
 
 type Newsletter = { id: string; nome: string };
 type Conexao = {
@@ -36,17 +38,26 @@ const conexoesComuns: Conexao[] = [
   { id: "15", nome: "Viviane Gomes", bio: "Arquiteta de Soluções em Cloud, desenhando infraestruturas escaláveis na GCP.", email: "viviane@email.com", empresa: "GCP Experts", habilidades: ["GCP", "Arquitetura Cloud", "Segurança", "Escalabilidade"] },
 ];
 
-export default function ConexoesPage() {
-  const [abaAtiva, setAbaAtiva] = useState<"newsletters" | "conexoes">("newsletters");
-  const [perfilAberto, setPerfilAberto] = useState<Conexao | null>(null);
+export default function NetworkPage() {
+  const [abaAtiva, setAbaAtiva] = useState<"newsletters" | "conexoes">("conexoes");
+  const [perfilAberto, setPerfilAberto] = useState<Conexao | null>(null); 
 
   const navigation = useNavigation();
+  const router = useRouter(); 
+
   useEffect(() => {
     navigation.setOptions({ title: "Minha Rede" });
   }, [navigation]);
 
   const getInitials = (name: string) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  };
+
+  const handleOpenChat = (nomeContato: string) => {
+    router.push({
+      pathname: "/ChatPage",
+      params: { nomeContato },
+    });
   };
 
   const renderNewsletters = () => (
@@ -75,6 +86,13 @@ export default function ConexoesPage() {
             
             <Text style={styles.perfilNome}>{perfilAberto.nome}</Text>
             <Text style={styles.perfilSub}>{perfilAberto.empresa}</Text>
+
+            <Pressable 
+              onPress={() => handleOpenChat(perfilAberto.nome)} 
+              style={styles.chatButtonDetail}
+            >
+              <Text style={styles.chatButtonText}>Mensagens 💬</Text>
+            </Pressable>
 
             <View style={styles.bioCard}>
               <Text style={styles.perfilLabel}>Resumo:</Text>
@@ -116,9 +134,10 @@ export default function ConexoesPage() {
               </View>
               <View style={styles.cardInfo}>
                 <Text style={styles.cardTitle}>{item.nome}</Text>
-                <Text style={styles.cardSubtitle}>{item.empresa} - {item.bio.substring(0, 30)}...</Text>
+                <Text style={styles.cardSubtitle} numberOfLines={2}>{item.empresa} - {item.bio}</Text>
               </View>
-              <Text style={styles.cardArrow}>→</Text>
+              
+              <Text style={styles.cardArrow}>→</Text> 
             </View>
           </Pressable>
         )}
@@ -127,7 +146,7 @@ export default function ConexoesPage() {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.mainContainer}>
       <View style={styles.tabs}>
         <Pressable
           style={[styles.tabButton, abaAtiva === "newsletters" && styles.tabActive]}
@@ -144,12 +163,13 @@ export default function ConexoesPage() {
       </View>
 
       {abaAtiva === "newsletters" ? renderNewsletters() : renderConexoes()}
-    </View>
+      <BottomBar onReloadFeed={() => router.replace("/FeedPage")} />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#F0F3F7" },
+  mainContainer: { flex: 1, backgroundColor: "#F0F3F7" }, 
   
   tabs: { 
     flexDirection: "row", 
@@ -184,8 +204,8 @@ const styles = StyleSheet.create({
     fontWeight: "800" 
   },
 
-  listContainer: { paddingVertical: 10, paddingHorizontal: 16 },
-
+  listContainer: { paddingVertical: 10, paddingHorizontal: 16, paddingBottom: 100 }, 
+  
   card: {
     backgroundColor: "#fff",
     padding: 20,
@@ -250,6 +270,7 @@ const styles = StyleSheet.create({
   },
   cardInfo: {
     flex: 1,
+    marginRight: 10, 
   },
   cardTitle: {
     fontSize: 17,
@@ -265,11 +286,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#6B7280',
   },
-
+  
   perfilScrollContent: { 
     paddingHorizontal: 16, 
     paddingVertical: 30,
     alignItems: 'center',
+    paddingBottom: 100
   },
   perfilContainer: { 
     width: "100%", 
@@ -366,7 +388,7 @@ const styles = StyleSheet.create({
 
   voltarButton: { 
     marginTop: 30, 
-    backgroundColor: "#2081C4", 
+    backgroundColor: "#6B7280", 
     paddingVertical: 14, 
     paddingHorizontal: 50, 
     borderRadius: 12,
@@ -375,11 +397,32 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 6,
     elevation: 6,
+    width: '90%'
   },
   voltarText: { 
     color: "#fff", 
     fontWeight: "800", 
     fontSize: 16, 
     textAlign: "center" 
+  },
+
+  chatButtonDetail: {
+    backgroundColor: '#007BFF', 
+    paddingVertical: 14, 
+    paddingHorizontal: 50, 
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 6,
+    elevation: 6,
+    marginBottom: 25,
+    width: '90%'
+  },
+  chatButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '800',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });

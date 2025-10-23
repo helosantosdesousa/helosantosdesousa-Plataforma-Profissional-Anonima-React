@@ -29,7 +29,6 @@ const PALETTE = {
   white: "#FFFFFF",
 };
 
-// Função mock para simular a criação de um objeto Conexao após o login
 const createMockUser = (username: string): Conexao => ({
   id: `user-${username.toLowerCase()}`,
   nome: username,
@@ -59,17 +58,14 @@ export default function LoginPage() {
   const handleLogin = async () => {
     if (isDisabled) return;
     setLoading(true);
-    // Simula a requisição de login
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     if (usuario === "admin" && senha === "123") {
       const loggedInUser = createMockUser(usuario);
       
-      // 1. Salva o usuário no contexto antes de navegar
       setUsuarioSelecionado(loggedInUser); 
 
       setLoading(false);
-      // 2. Navega sem usar parâmetros de URL (o FeedPage lerá do contexto)
       router.replace("/FeedPage"); 
     } else {
       setLoading(false);
@@ -96,7 +92,6 @@ export default function LoginPage() {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.logo}>
-            {/* Imagem mockada ou logotipo */}
           </View>
           <Text style={styles.title}>Plataforma Profissional Anônima</Text>
           <Text style={styles.subtitle}>Autenticação segura</Text>

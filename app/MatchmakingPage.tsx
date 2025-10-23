@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     justifyContent: "center", 
     alignItems: "center", 
     padding: 16,
-    paddingBottom: 100, // Aumentado para evitar sobreposição da BottomBar
+    paddingBottom: 100,
   },
   
   card: {

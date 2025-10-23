@@ -3,14 +3,14 @@ import { usePathname, useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useUser } from "../../context/UserContext"; // 🔹 importa o contexto
+import { useUser } from "../../context/UserContext"; 
 
 type BottomBarProps = {
   onReloadFeed?: () => void;
 };
 
 export default function BottomBar({ onReloadFeed }: BottomBarProps) {
-  const { usuarioSelecionado } = useUser(); // 🔹 pega o usuário logado
+  const { usuarioSelecionado } = useUser(); 
   const nomeUsuario = usuarioSelecionado?.nome || "Usuário Exemplo";
 
   const insets = useSafeAreaInsets();
@@ -44,8 +44,8 @@ export default function BottomBar({ onReloadFeed }: BottomBarProps) {
     {
       name: "chat",
       color: "#8B5CF6",
-      isActive: currentPath.includes("ChatPage"),
-      action: () => router.push("/ChatPage"),
+      isActive: currentPath.includes("ContactsPage"),
+      action: () => router.push("/ContactsPage"),
     },
     {
       name: "person",

@@ -12,7 +12,7 @@ import {
   Keyboard,
 } from "react-native";
 import { useRouter, useNavigation } from "expo-router";
-import { useUser, Conexao } from "../context/UserContext"; // Importação do useUser
+import { useUser, Conexao } from "../context/UserContext"; 
 
 const PALETTE = {
   primary: "#3B82F6",
@@ -29,7 +29,6 @@ const PALETTE = {
 export default function SignUpPage() {
   const router = useRouter();
   const navigation = useNavigation();
-  // Obtém o setter do contexto
   const { setUsuarioSelecionado } = useUser();
 
   const [usuario, setUsuario] = useState("");
@@ -56,13 +55,11 @@ export default function SignUpPage() {
     }
 
     setLoading(true);
-    // Simulação de chamada de API/Autenticação
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setLoading(false);
 
-    // 1. Cria um objeto de usuário (Conexao)
     const newUser: Conexao = {
-        id: `user-${Date.now()}`, // ID mock para demonstração
+        id: `user-${Date.now()}`, 
         nome: usuario,
         email: email,
         bio: `Olá! Eu sou ${usuario} e acabei de me cadastrar no PPA.`,
@@ -70,12 +67,10 @@ export default function SignUpPage() {
         habilidades: [],
     };
 
-    // 2. Salva o usuário no contexto global
     setUsuarioSelecionado(newUser);
 
     Alert.alert("Sucesso", "Conta criada com sucesso!");
     
-    // 3. Navega para o Feed sem a necessidade de parâmetros de URL
     router.replace("/FeedPage");
   };
 

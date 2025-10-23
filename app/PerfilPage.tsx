@@ -36,11 +36,10 @@ const profileActions: ProfileAction[] = [
 
 export default function ProfilePage() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ nome?: string }>(); // Mantido para possível uso futuro, mas não usado para nome
+  const params = useLocalSearchParams<{ nome?: string }>();
   const navigation = useNavigation();
   const { usuarioSelecionado, setUsuarioSelecionado } = useUser();
 
-  // Simplificado para usar APENAS o contexto, já que o SignUpPage o define
   const nomeUsuario = usuarioSelecionado?.nome || "Usuário Exemplo";
   const mockHandle = `@${nomeUsuario.toLowerCase().replace(/\s/g, "_")}`;
 
