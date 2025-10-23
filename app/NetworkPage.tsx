@@ -16,8 +16,8 @@ type Conexao = {
 
 const newsletters: Newsletter[] = [
   { id: "1", nome: "Tech Daily" },
-  { id: "2", nome: "Mindset & Sucesso" },
-  { id: "3", nome: "Café com Código" },
+  { id: "2", nome: "DiversiTECH" },
+  { id: "3", nome: "Code talks" },
 ];
 
 const conexoesComuns: Conexao[] = [
