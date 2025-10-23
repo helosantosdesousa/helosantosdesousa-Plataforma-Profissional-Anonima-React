@@ -15,7 +15,7 @@ import {
 import { useRouter } from "expo-router";
 import { useNavigation } from "expo-router";
 import { useEffect } from "react";
-
+import { useUser, Conexao } from "../context/UserContext";
 
 const PALETTE = {
   primary: "#3B82F6",
@@ -29,8 +29,19 @@ const PALETTE = {
   white: "#FFFFFF",
 };
 
+// Função mock para simular a criação de um objeto Conexao após o login
+const createMockUser = (username: string): Conexao => ({
+  id: `user-${username.toLowerCase()}`,
+  nome: username,
+  bio: "Usuário recém-logado.",
+  email: `${username.toLowerCase()}@ppa.com`,
+  empresa: "PPA Startup",
+  habilidades: ["Iniciante"],
+});
+
 export default function LoginPage() {
   const router = useRouter();
+  const { setUsuarioSelecionado } = useUser();
   const [usuario, setUsuario] = useState<string>("");
   const [senha, setSenha] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,29 +51,36 @@ export default function LoginPage() {
 
   const navigation = useNavigation();
 
-useEffect(() => {
-  navigation.setOptions({ headerShown: false });
-}, [navigation]);
+  useEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
 
 
- const handleLogin = async () => {
-  if (isDisabled) return;
-  setLoading(true);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  const handleLogin = async () => {
+    if (isDisabled) return;
+    setLoading(true);
+    // Simula a requisição de login
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-  if (usuario === "admin" && senha === "123") {
-    setLoading(false);
-    router.replace(`/FeedPage?nome=${encodeURIComponent(usuario)}`);
-  } else {
-    setLoading(false);
-    const msg = "Erro no login: Usuário ou senha inválidos.";
-    if (Platform.OS === "web") {
-      window.alert(msg);
+    if (usuario === "admin" && senha === "123") {
+      const loggedInUser = createMockUser(usuario);
+      
+      // 1. Salva o usuário no contexto antes de navegar
+      setUsuarioSelecionado(loggedInUser); 
+
+      setLoading(false);
+      // 2. Navega sem usar parâmetros de URL (o FeedPage lerá do contexto)
+      router.replace("/FeedPage"); 
     } else {
-      Alert.alert("Erro no login", msg);
+      setLoading(false);
+      const msg = "Erro no login: Usuário ou senha inválidos.";
+      if (Platform.OS === "web") {
+        window.alert(msg);
+      } else {
+        Alert.alert("Erro no login", msg);
+      }
     }
-  }
-};
+  };
 
 
   return (
@@ -78,11 +96,7 @@ useEffect(() => {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.logo}>
-            <Image
-  source={require("../assets/images/ppa_logo.png")}
-  style={{ width: 80, height: 80, borderRadius: 16, marginBottom: 12 }}
-  resizeMode="contain"
-/>
+            {/* Imagem mockada ou logotipo */}
           </View>
           <Text style={styles.title}>Plataforma Profissional Anônima</Text>
           <Text style={styles.subtitle}>Autenticação segura</Text>
@@ -142,13 +156,13 @@ useEffect(() => {
           )}
 
           <View style={styles.footerLinks}>
-  <TouchableOpacity>
-    <Text style={styles.linkText}>Esqueci minha senha</Text>
-  </TouchableOpacity>
-  <TouchableOpacity onPress={() => router.push("/SignupPage")}>
-    <Text style={styles.linkText}>Criar conta</Text>
-  </TouchableOpacity>
-</View>
+            <TouchableOpacity>
+              <Text style={styles.linkText}>Esqueci minha senha</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push("/SignupPage")}>
+              <Text style={styles.linkText}>Criar conta</Text>
+            </TouchableOpacity>
+          </View>
 
         </View>
 
