@@ -87,7 +87,6 @@ export default function ProfilePage() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
-        {/* Cabeçalho do Perfil */}
         <View style={styles.profileHeader}>
           <Image
             source={{
@@ -99,14 +98,12 @@ export default function ProfilePage() {
           <Text style={styles.handleText}>{mockHandle}</Text>
         </View>
 
-        {/* Estatísticas */}
         <View style={styles.statsContainer}>
           <StatsCard label="Posts" value="4" onPress={handleUserPostsPress} />
           <StatsCard label="Conexões" value="15" onPress={handleNetworkPress} />
           <StatsCard label="Likes Recebidos" value="1.8K" />
         </View>
 
-        {/* Ações Gerais */}
         <View style={styles.actionSection}>
           <Text style={styles.sectionTitle}>Geral</Text>
           {profileActions.slice(0, 3).map((action) => (

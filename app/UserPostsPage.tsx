@@ -36,7 +36,6 @@ export default function UserPostsPage() {
 
   const openPost = (post: Post) => {
     const encodedPost = encodeURIComponent(JSON.stringify(post));
-    // Assumindo que a rota PostPage existe no projeto
     router.push(`/PostPage?post=${encodedPost}` as any);
   };
 

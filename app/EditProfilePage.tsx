@@ -103,11 +103,8 @@ export default function EditProfilePage() {
     };
 
     console.log("Salvando perfil:", profileData);
-    // Substituindo Alert.alert por console.log
     console.log("Sucesso: Perfil salvo com sucesso!"); 
-    // Alert.alert("Sucesso", "Perfil salvo com sucesso!");
     
-    // Simula a volta para a página de perfil com o nome atualizado
     router.replace(`/PerfilPage?nome=${encodeURIComponent(name)}`);
   };
 
