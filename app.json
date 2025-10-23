@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "PlataformaProfissionalAnonima",
+    "name": "Plataforma Profissional Anônima",
     "slug": "PlataformaProfissionalAnonima",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/ppa_logo.png",
     "scheme": "plataformaprofissionalanonima",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -24,7 +24,7 @@
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/ppa_logo.png"
     },
     "plugins": [
       "expo-router",
