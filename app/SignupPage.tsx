@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,11 +11,8 @@ import {
   KeyboardAvoidingView,
   Keyboard,
 } from "react-native";
-import { useRouter } from "expo-router";
-
-import { useEffect } from "react";
-import { useNavigation } from "expo-router";
-
+import { useRouter, useNavigation } from "expo-router";
+import { useUser, Conexao } from "../context/UserContext"; // Importação do useUser
 
 const PALETTE = {
   primary: "#3B82F6",
@@ -31,6 +28,10 @@ const PALETTE = {
 
 export default function SignUpPage() {
   const router = useRouter();
+  const navigation = useNavigation();
+  // Obtém o setter do contexto
+  const { setUsuarioSelecionado } = useUser();
+
   const [usuario, setUsuario] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
@@ -41,11 +42,9 @@ export default function SignUpPage() {
 
   const isDisabled = !usuario.trim() || !email.trim() || !senha.trim() || !confSenha.trim();
 
-  const navigation = useNavigation();
-
-useEffect(() => {
-  navigation.setOptions({ title: "Criar uma conta" });
-}, [navigation]);
+  useEffect(() => {
+    navigation.setOptions({ title: "Criar uma conta" });
+  }, [navigation]);
 
 
   const handleSignUp = async () => {
@@ -57,14 +56,27 @@ useEffect(() => {
     }
 
     setLoading(true);
+    // Simulação de chamada de API/Autenticação
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setLoading(false);
 
+    // 1. Cria um objeto de usuário (Conexao)
+    const newUser: Conexao = {
+        id: `user-${Date.now()}`, // ID mock para demonstração
+        nome: usuario,
+        email: email,
+        bio: `Olá! Eu sou ${usuario} e acabei de me cadastrar no PPA.`,
+        empresa: "",
+        habilidades: [],
+    };
+
+    // 2. Salva o usuário no contexto global
+    setUsuarioSelecionado(newUser);
+
     Alert.alert("Sucesso", "Conta criada com sucesso!");
-router.replace({
-  pathname: "/FeedPage",
-  params: { nome: usuario },
-});
+    
+    // 3. Navega para o Feed sem a necessidade de parâmetros de URL
+    router.replace("/FeedPage");
   };
 
   return (

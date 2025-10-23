@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useNavigation, useRouter } from "expo-router";
+import React, { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-  Animated,
-  Pressable,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useUser } from "../context/UserContext";
 import BottomBar from "./components/BottomBar";
-import { useNavigation } from "expo-router";
 
 export type Post = {
   id: number;
@@ -30,21 +28,18 @@ const initialPosts: Post[] = [
 
 export default function FeedPage() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ nome?: string; novoPost?: string }>();
-  const nomeUsuario = params.nome || "Usuário Exemplo";
-  const [posts, setPosts] = useState<Post[]>(initialPosts);
   const navigation = useNavigation();
+
+  // Agora, o nome do usuário vem diretamente do contexto, que é setado no SignUpPage.
+  const { usuarioSelecionado } = useUser();
+  const nomeUsuario = usuarioSelecionado?.nome || "Usuário Exemplo";
+
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
 
   useEffect(() => {
     navigation.setOptions({ title: "Feed" });
   }, [navigation]);
 
-  useEffect(() => {
-    if (params.novoPost) {
-      const novoPost: Post = JSON.parse(params.novoPost as string);
-      setPosts(prev => [novoPost, ...prev]);
-    }
-  }, [params.novoPost]);
 
   const openPost = (post: Post) => {
     const encodedPost = encodeURIComponent(JSON.stringify(post));
@@ -52,13 +47,13 @@ export default function FeedPage() {
   };
 
   const handleCreatePost = () => {
+    // Usamos o nomeUsuario obtido do contexto
     router.push(`/CreatePostPage?nomeUsuario=${nomeUsuario}`);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={[styles.feedContent, { paddingBottom: 100 }]}>
-        
         <View style={styles.topButtons}>
           <TouchableOpacity
             style={[styles.topButton, styles.vagasButton]}
@@ -68,7 +63,6 @@ export default function FeedPage() {
             <Text style={styles.vagasText}>💼 Vagas de Emprego</Text>
           </TouchableOpacity>
         </View>
-
         {posts.map(post => (
           <TouchableOpacity
             key={post.id}
@@ -81,9 +75,7 @@ export default function FeedPage() {
             <Text style={styles.postAuthor}>Autor: {post.author}</Text>
           </TouchableOpacity>
         ))}
-
       </ScrollView>
-
       <TouchableOpacity
         style={styles.fab}
         onPress={handleCreatePost}
@@ -91,10 +83,8 @@ export default function FeedPage() {
       >
         <Text style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
-
       <BottomBar
-        nomeUsuario={nomeUsuario}
-        onReloadFeed={() => router.replace(`/FeedPage?nome=${nomeUsuario}`)}
+        onReloadFeed={() => router.replace("/FeedPage")}
       />
     </SafeAreaView>
   );
@@ -186,7 +176,7 @@ const styles = StyleSheet.create({
   fabIcon: {
     fontSize: 30,
     color: '#FFFFFF',
-    lineHeight: 30, 
+    lineHeight: 30,
     marginTop: -5
   }
 });

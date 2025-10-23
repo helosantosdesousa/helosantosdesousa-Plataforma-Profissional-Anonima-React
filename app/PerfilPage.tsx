@@ -1,14 +1,15 @@
-import React, { useEffect } from "react"; 
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import React, { useEffect } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
   Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useRouter, useLocalSearchParams, useNavigation } from "expo-router";
+import { useUser } from "../context/UserContext"; 
 import BottomBar from "./components/BottomBar";
 
 type AppRoutes =
@@ -35,10 +36,12 @@ const profileActions: ProfileAction[] = [
 
 export default function ProfilePage() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ nome?: string }>();
+  const params = useLocalSearchParams<{ nome?: string }>(); // Mantido para possível uso futuro, mas não usado para nome
   const navigation = useNavigation();
+  const { usuarioSelecionado, setUsuarioSelecionado } = useUser();
 
-  const nomeUsuario = params.nome || "Usuário Exemplo";
+  // Simplificado para usar APENAS o contexto, já que o SignUpPage o define
+  const nomeUsuario = usuarioSelecionado?.nome || "Usuário Exemplo";
   const mockHandle = `@${nomeUsuario.toLowerCase().replace(/\s/g, "_")}`;
 
   useEffect(() => {
@@ -47,7 +50,12 @@ export default function ProfilePage() {
 
   const handleAction = (route: AppRoutes | null, isDestructive?: boolean) => {
     if (!route) {
-      console.log("ALERTA: Aviso - Esta funcionalidade ainda não está disponível.");
+      return;
+    }
+
+    if (route === "/LoginPage" && isDestructive) {
+      setUsuarioSelecionado(null);
+      router.replace(route);
       return;
     }
 
@@ -72,15 +80,17 @@ export default function ProfilePage() {
   };
 
   const StatsCard = ({ label, value, onPress }: { label: string; value: string; onPress?: () => void }) => (
-    <TouchableOpacity 
-      style={styles.statBox} 
-      onPress={onPress} 
-      disabled={!onPress}
-      activeOpacity={onPress ? 0.6 : 1}
-    >
-      <Text style={styles.statValue}>{value}</Text>
-      <Text style={styles.statLabel}>{label}</Text>
-    </TouchableOpacity>
+    <View style={styles.statBox}>
+      <TouchableOpacity 
+        onPress={onPress} 
+        disabled={!onPress}
+        activeOpacity={onPress ? 0.6 : 1}
+        style={{ alignItems: 'center' }}
+      >
+        <Text style={styles.statValue}>{value}</Text>
+        <Text style={styles.statLabel}>{label}</Text>
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -94,8 +104,8 @@ export default function ProfilePage() {
             }}
             style={styles.profileImage}
           />
-          <Text style={styles.displayName}>{nomeUsuario}</Text>
-          <Text style={styles.handleText}>{mockHandle}</Text>
+          <Text style={styles.displayName}>{String(nomeUsuario)}</Text>
+          <Text style={styles.handleText}>{String(mockHandle)}</Text>
         </View>
 
         <View style={styles.statsContainer}>
@@ -119,7 +129,6 @@ export default function ProfilePage() {
           ))}
         </View>
 
-        {/* Sessão */}
         <View style={styles.actionSection}>
           <Text style={styles.sectionTitle}>Sessão</Text>
           {profileActions.slice(3).map((action) => (
@@ -136,10 +145,7 @@ export default function ProfilePage() {
         </View>
       </ScrollView>
 
-      <BottomBar 
-        nomeUsuario={nomeUsuario} 
-        onReloadFeed={() => router.replace(`/FeedPage?nome=${nomeUsuario}`)} 
-      />
+      <BottomBar onReloadFeed={() => router.replace("/FeedPage")} />
     </SafeAreaView>
   );
 }
