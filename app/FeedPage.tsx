@@ -1,4 +1,4 @@
-import { useNavigation, useRouter } from "expo-router";
+import { useNavigation, useRouter, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ScrollView,
@@ -29,17 +29,36 @@ const initialPosts: Post[] = [
 export default function FeedPage() {
   const router = useRouter();
   const navigation = useNavigation();
+  const params = useLocalSearchParams<{ novoPost?: string }>();
 
-  // Agora, o nome do usuário vem diretamente do contexto, que é setado no SignUpPage.
   const { usuarioSelecionado } = useUser();
   const nomeUsuario = usuarioSelecionado?.nome || "Usuário Exemplo";
 
   const [posts, setPosts] = useState<Post[]>(initialPosts);
 
   useEffect(() => {
+  if (params.novoPost) {
+    try {
+      const newPost: Post = JSON.parse(decodeURIComponent(params.novoPost));
+      
+      setPosts(prevPosts => {
+        // Verifica se o post já existe para evitar duplicatas em certas situações
+        if (prevPosts.some(post => post.id === newPost.id)) {
+            return prevPosts; 
+        }
+        return [newPost, ...prevPosts];
+      });
+      
+
+    } catch (error) {
+      console.error("Erro ao adicionar novo post:", error);
+    }
+  }
+}, [params.novoPost]);
+
+  useEffect(() => {
     navigation.setOptions({ title: "Feed" });
   }, [navigation]);
-
 
   const openPost = (post: Post) => {
     const encodedPost = encodeURIComponent(JSON.stringify(post));
@@ -47,7 +66,6 @@ export default function FeedPage() {
   };
 
   const handleCreatePost = () => {
-    // Usamos o nomeUsuario obtido do contexto
     router.push(`/CreatePostPage?nomeUsuario=${nomeUsuario}`);
   };
 
@@ -63,6 +81,7 @@ export default function FeedPage() {
             <Text style={styles.vagasText}>💼 Vagas de Emprego</Text>
           </TouchableOpacity>
         </View>
+
         {posts.map(post => (
           <TouchableOpacity
             key={post.id}
@@ -76,6 +95,7 @@ export default function FeedPage() {
           </TouchableOpacity>
         ))}
       </ScrollView>
+
       <TouchableOpacity
         style={styles.fab}
         onPress={handleCreatePost}
@@ -83,6 +103,7 @@ export default function FeedPage() {
       >
         <Text style={styles.fabIcon}>+</Text>
       </TouchableOpacity>
+
       <BottomBar
         onReloadFeed={() => router.replace("/FeedPage")}
       />

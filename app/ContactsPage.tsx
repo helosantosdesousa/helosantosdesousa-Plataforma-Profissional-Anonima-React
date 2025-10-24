@@ -58,7 +58,7 @@ export default function ContatosPage() {
       </View>
       <View style={styles.infoContainer}>
         <Text style={styles.connectionName}>{item.nome}</Text>
-        <Text style={styles.connectionBio} numberOfLines={1}>Última mensagem: Oi, tudo bem?</Text>
+        <Text style={styles.connectionBio} numberOfLines={1}>O que você acha?</Text>
       </View>
       <Text style={styles.chatIcon}></Text>
     </TouchableOpacity>
