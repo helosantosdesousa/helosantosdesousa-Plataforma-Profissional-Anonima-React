@@ -4,7 +4,8 @@ A Plataforma Profissional Anônima (PPA) é um ecossistema digital full-stack de
 
 O projeto PPA foi reconhecido pela sua inovação e relevância no contexto da Sociedade 5.0, sendo selecionado para a fase final do evento **NEXT FIAP 2025**. Esta conquista valida nossa proposta de criar soluções tecnológicas que respondem a desafios reais do mercado de trabalho e reforça o compromisso do grupo com a excelência em desenvolvimento.
 
-![Logo da PPA](https://raw.githubusercontent.com/helosantosdesousa/helosantosdesousa-Plataforma-Profissional-Anonima-React/main/assets/images/ppa_logo.png)
+![Logo da Plataforma](https://github.com/helosantosdesousa/helosantosdesousa-Plataforma-Profissional-Anonima-React/blob/main/assets/images/ppa_logo.png?raw=true)
+
 
 ## 🚀 Como Executar o Projeto (Expo)
 
