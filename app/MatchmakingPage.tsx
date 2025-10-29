@@ -51,24 +51,23 @@ export default function MatchmakingPage() {
     navigation.setOptions({ title: "Matchmaking" });
   }, [navigation]);
 
+  // 1. Interpolação para a ROTAÇÃO (sem alteração)
   const rotate = translateX.interpolate({
     inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
     outputRange: ["-8deg", "0deg", "8deg"],
     extrapolate: "clamp",
   });
-
-  const acceptOpacity = translateX.interpolate({
-    inputRange: [0, SCREEN_WIDTH / 4],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
-
-  const rejectOpacity = translateX.interpolate({
-    inputRange: [-SCREEN_WIDTH / 4, 0],
-    outputRange: [1, 0],
+  
+  // 2. Interpolação para a COR DE FUNDO
+  const animatedBackgroundColor = translateX.interpolate({
+    inputRange: [-SCREEN_WIDTH, 0, SCREEN_WIDTH],
+    outputRange: [PALETTE.reject, PALETTE.bg, PALETTE.accept],
     extrapolate: 'clamp',
   });
   
+  // As opacidades dos retângulos de overlay (acceptOpacity, rejectOpacity) foram removidas
+  // pois os overlays também foram removidos.
+
   const perfilAtual = perfis[index];
 
   const proximoPerfil = () => {
@@ -115,8 +114,9 @@ export default function MatchmakingPage() {
     );
   }
 
+  // 3. O Container principal agora é um Animated.View com a cor de fundo animada
   return (
-    <View style={styles.container}>
+    <Animated.View style={[styles.container, { backgroundColor: animatedBackgroundColor }]}>
       <View style={styles.content}>
         <PanGestureHandler 
           onGestureEvent={onGestureEvent} 
@@ -125,12 +125,7 @@ export default function MatchmakingPage() {
         >
           <Animated.View style={[styles.card, { transform: [{ translateX }, { rotate }] }]}>
             
-            <Animated.View style={[styles.overlay, styles.overlayAccept, { opacity: acceptOpacity }]}>
-              <Text style={styles.overlayText}>ACEITAR ✅</Text>
-            </Animated.View>
-            <Animated.View style={[styles.overlay, styles.overlayReject, { opacity: rejectOpacity }]}>
-              <Text style={styles.overlayText}>RECUSAR ❌</Text>
-            </Animated.View>
+            {/* 4. As views de overlay foram REMOVIDAS daqui */}
 
             <View style={styles.profileHeader}>
               <View style={styles.avatar}>
@@ -175,12 +170,13 @@ export default function MatchmakingPage() {
         </View>
       </View>
       <BottomBar onReloadFeed={() => {}} />
-    </View>
+    </Animated.View>
   );
 }
 
+// 5. O estilo 'container' deve ser compatível com Animated.View, e os estilos de overlay não são mais necessários.
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: PALETTE.bg },
+  container: { flex: 1, /* A cor de fundo original (PALETTE.bg) foi movida para a interpolação */ },
   content: { 
     flex: 1, 
     justifyContent: "center", 
@@ -209,32 +205,8 @@ const styles = StyleSheet.create({
     }),
   },
   
-  overlay: {
-    position: 'absolute',
-    top: 30,
-    padding: 10,
-    borderRadius: 8,
-    borderWidth: 3,
-    zIndex: 10,
-  },
-  overlayAccept: {
-    right: 30,
-    borderColor: PALETTE.accept,
-    transform: [{ rotate: '15deg' }],
-  },
-  overlayReject: {
-    left: 30,
-    borderColor: PALETTE.reject,
-    transform: [{ rotate: '-15deg' }],
-  },
-  overlayText: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: PALETTE.card,
-    textShadowColor: 'rgba(0, 0, 0, 0.4)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
+  // Estilos de overlay (overlay, overlayAccept, overlayReject, overlayText) foram REMOVIDOS
+  // para remover os retângulos "ACEITAR/RECUSAR" flutuantes.
 
   profileHeader: {
     alignItems: 'center',
