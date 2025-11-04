@@ -17,7 +17,8 @@ type AppRoutes =
   | "/SettingsPage"
   | "/LoginPage"
   | "/NetworkPage"
-  | "/UserPostsPage";
+  | "/UserPostsPage"
+  | "/AIPage"; // Adicionando a rota da IA
 
 type ProfileAction = {
   id: string;
@@ -30,7 +31,7 @@ type ProfileAction = {
 const profileActions: ProfileAction[] = [
   { id: "edit", label: "Editar Perfil", icon: "✏️", route: "/EditProfilePage" },
   { id: "settings", label: "Configurações", icon: "⚙️", route: "/SettingsPage" },
-  { id: "support", label: "Ajuda e Suporte", icon: "❓", route: null },
+  { id: "support", label: "Ajuda e Suporte", icon: "❓", route: "/AIPage" }, 
   { id: "logout", label: "Sair da Conta", icon: "🚪", route: "/LoginPage", isDestructive: true },
 ];
 
@@ -60,6 +61,11 @@ export default function ProfilePage() {
 
     if (route === "/EditProfilePage") {
       router.push(`/EditProfilePage?nome=${encodeURIComponent(nomeUsuario)}`);
+      return;
+    }
+    
+   if (route === "/AIPage") {
+      router.push(`/AIPage?nomeUsuario=${encodeURIComponent(nomeUsuario)}`);
       return;
     }
 
