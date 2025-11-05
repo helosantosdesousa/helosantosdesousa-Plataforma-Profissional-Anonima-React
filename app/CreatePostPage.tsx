@@ -17,7 +17,7 @@ import { useNavigation, useLocalSearchParams } from "expo-router";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 
 const GEMINI_MODEL = "gemini-2.5-flash-preview-09-2025"; 
-const API_KEY = "SUA_CHAVE_AQUI"; // substitua pela sua chave real
+const API_KEY = "AIzaSyAOiAMmdfZfvGuBPU45DCM6Mvo5rYaJOjE";
 
 const mockAlert = (title: string, message: string) => {
     console.log(`ALERTA: ${title} - ${message}`);
@@ -61,7 +61,6 @@ const fetchGeminiSuggestion = async (postTitle: string, postContent: string): Pr
         let text = result.candidates?.[0]?.content?.parts?.[0]?.text || 
             "A IA não conseguiu gerar uma sugestão. Tente novamente.";
 
-        // 🔧 Remove qualquer ** que vier do modelo
         text = text.replace(/\*\*/g, "");
 
         return text;
@@ -125,7 +124,6 @@ export default function CreatePostPage() {
         }
     };
 
-    // ✨ Animação de brilho suave do raio
     const glowAnim = useRef(new Animated.Value(1)).current;
     useEffect(() => {
         Animated.loop(
