@@ -85,7 +85,6 @@ export default function MatchmakingPage() {
     extrapolate: "clamp",
   });
 
-  // Cor de fundo dinâmica
   const animatedBackground = translateX.interpolate({
     inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
     outputRange: [PALETTE.reject, PALETTE.card, PALETTE.accept],
