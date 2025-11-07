@@ -7,7 +7,7 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import { useNavigation, useLocalSearchParams } from "expo-router";
+import { useNavigation, useLocalSearchParams, router } from "expo-router";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
 import React, { useState, useEffect, useRef } from "react";
 import BottomBar from "./components/BottomBar";
@@ -79,6 +79,10 @@ export default function MatchmakingPage() {
     navigation.setOptions({ title: "Matchmaking" });
   }, [navigation]);
 
+  const goToFeed = () => {
+    router.replace('/FeedPage');
+  };
+
   const rotate = translateX.interpolate({
     inputRange: [-SCREEN_WIDTH / 2, 0, SCREEN_WIDTH / 2],
     outputRange: ["-8deg", "0deg", "8deg"],
@@ -104,7 +108,7 @@ export default function MatchmakingPage() {
     Animated.timing(translateX, {
       toValue: valor,
       duration: 300,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(proximoPerfil);
   };
 
@@ -138,7 +142,7 @@ export default function MatchmakingPage() {
             Volte mais tarde para novas conexões.
           </Text>
         </View>
-        <BottomBar onReloadFeed={() => {}} />
+        <BottomBar onReloadFeed={goToFeed} />
       </View>
     );
   }
@@ -203,7 +207,7 @@ export default function MatchmakingPage() {
           </TouchableOpacity>
         </View>
       </View>
-      <BottomBar onReloadFeed={() => {}} />
+      <BottomBar onReloadFeed={goToFeed} />
     </View>
   );
 }
